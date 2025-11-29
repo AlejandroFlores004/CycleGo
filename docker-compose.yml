@@ -39,9 +39,12 @@ services:
       - "8081:80"      # pgAdmin en localhost:8081
     networks:
       - spring-net
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
 volumes:
   pg_data:
+  pgadmin_data:
 
 networks:
   spring-net:
