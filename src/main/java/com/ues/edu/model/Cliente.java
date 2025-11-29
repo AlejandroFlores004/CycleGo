@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,6 +35,7 @@ public class Cliente extends Persona {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_registro", nullable = false)
+    @PastOrPresent(message = "La fecha de registro no puede ser futura")
     private Date fechaRegistro;
 
     @NotNull(message = "El usuario de registro es obligatorio")

@@ -45,12 +45,11 @@ public class Persona {
     private String email;
 
     @Column(name = "estado", nullable = false)
-    private boolean estado;
+    private Boolean estado;
 
     @PrePersist
     public void prePersist() {
-        // si no se setea estado, lo dejamos true por defecto
-        if (!this.estado) {
+        if (this.estado == null) {
             this.estado = true;
         }
     }

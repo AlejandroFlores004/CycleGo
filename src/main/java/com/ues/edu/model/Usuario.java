@@ -1,5 +1,7 @@
 package com.ues.edu.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,8 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,11 +34,19 @@ public class Usuario {
     @Column(name = "id_usuario")
     private Long idUsuario;
 
+    @Pattern(
+    regexp = "^[A-Za-z0-9._-]{4,50}$",
+    message = "El username solo puede contener letras, números, puntos, guiones y guiones bajos"
+    )
     @NotBlank(message = "El username es obligatorio")
     @Size(min = 4, max = 50, message = "El username debe tener entre 4 y 50 caracteres")
     @Column(name = "username", unique = true, nullable = false, length = 50)
     private String username;
 
+    @Pattern(
+    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,100}$",
+    message = "La contraseña debe tener al menos una mayúscula, una minúscula y un número"
+    )
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, max = 100, message = "La contraseña debe tener al menos 8 caracteres")
     @Column(name = "password", nullable = false, length = 100)
@@ -51,4 +64,18 @@ public class Usuario {
 
     @Column(name = "activo", nullable = false)
     private boolean activo = true;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_creacion", updatable = false)
+    @jakarta.validation.constraints.PastOrPresent(message = "La fecha de creación no puede ser futura")
+    private Date fechaCreacion;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "ultimo_inicio_sesion")
+    @jakarta.validation.constraints.PastOrPresent(message = "La fecha de último inicio de sesión no puede ser futura")
+    private Date ultimoInicioSesion;
+
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "id_usuario_creador")
+    private Usuario creadoPor;
 }
