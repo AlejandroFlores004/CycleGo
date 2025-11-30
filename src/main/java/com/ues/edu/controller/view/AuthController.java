@@ -8,6 +8,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login() {
-        return "login"; // nombre de la vista: login.html o login.jsp
+        return "login";
     }
 }

@@ -126,6 +126,18 @@
     filter: brightness(1.4);
 }
 
+.right-menu .btn-logout {
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.right-menu .btn-logout:hover {
+    background-color: rgba(34, 197, 94, 0.12);
+    color: #22c55e !important;
+}
+
+
 /* Ajustes responsivos */
 @media (max-width: 991.98px) {
     .main-menu .nav-link,

@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -44,20 +45,21 @@ public class Usuario {
     private String username;
 
     @Pattern(
-    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,100}$",
-    message = "La contraseña debe tener al menos una mayúscula, una minúscula y un número"
+        regexp = "^$|(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,100}$",
+        message = "La contraseña debe tener al menos una mayúscula, una minúscula y un número"
     )
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 8, max = 100, message = "La contraseña debe tener al menos 8 caracteres")
+    @Size(min = 0, max = 100, message = "La contraseña no debe exceder 100 caracteres")
     @Column(name = "password", nullable = false, length = 100)
     private String password;
+
+    @Transient
+    private String passwordConfirm;
 
     @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", nullable = false, length = 20)
     private Rol rol;
 
-    @NotNull(message = "El empleado asociado es obligatorio")
     @OneToOne
     @JoinColumn(name = "id_empleado", nullable = false, unique = true)
     private Empleado empleado;

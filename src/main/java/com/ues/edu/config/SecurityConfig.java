@@ -40,7 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authenticationProvider(authenticationProvider())
-            .csrf(csrf -> csrf.disable()) // por ahora desactivado, así no te preocupás por el token en el form
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) // por ahora desactivado, así no te preocupás por el token en el form
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/login", "/error").permitAll()
                 .anyRequest().authenticated()

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:fragment="layout(title, activePage, content)">
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    th:fragment="layout(title, activePage, content)">
 <head>
     <meta charset="UTF-8">
     <title th:text="${title} ?: 'CycleGo'">CycleGo</title>
@@ -18,7 +19,7 @@
 <body>
 
     <!-- Menú reutilizable -->
-    <nav th:replace="fragments/menu :: menu(${activePage})"></nav>
+    <nav th:replace="~{fragments/menu :: menu(${activePage})}"></nav>
 
     <!-- Contenedor principal de cada pantalla -->
     <main class="container mt-4">
