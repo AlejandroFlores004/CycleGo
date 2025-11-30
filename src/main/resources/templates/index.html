@@ -1,23 +1,76 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>CycleGo | Inicio</title>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Inicio', 'inicio', ~{::section})}">
 
-    <!-- Bootstrap y tu CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
+<section class="dashboard">
 
-    <!-- Aquí “inyectas” el menú -->
-    <div th:replace="fragments/menu :: menu"></div>
+    <!-- TÍTULO DE BIENVENIDA -->
+    <div class="welcome-box shadow-sm p-4 mb-4 rounded-3">
+        <h1 class="mb-1 fw-bold text-primary">
+            Bienvenido a CycleGo
+            <span th:if="${usuarioSesion != null}">
+                <span class="text-dark">, </span>
+                <span class="username-highlight" th:text="${usuarioSesion.empleado.nombres}">Nombre</span>
+            </span>
+        </h1>
 
-    <div class="container mt-4">
-        <h1>Bienvenido a CycleGo</h1>
-        <p>Contenido de tu página de inicio...</p>
+        <p class="lead text-muted mb-0" th:if="${usuarioSesion != null}">
+            Usuario:
+            <strong class="text-dark" th:text="${usuarioSesion.username}">username</strong>
+            &nbsp;|&nbsp;
+            Rol:
+            <span class="badge bg-success" th:text="${usuarioSesion.rol}">ROL</span>
+            &nbsp;|&nbsp;
+            Estado:
+            <span th:class="${usuarioSesion.activo} ? 'badge bg-primary' : 'badge bg-danger'"
+                  th:text="${usuarioSesion.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+        </p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <!-- FILA DE TARJETAS DE RESUMEN -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="summary-card shadow-sm p-3 rounded-3">
+                <h5 class="text-secondary">Bicicletas disponibles</h5>
+                <h2 class="fw-bold text-primary">--</h2>
+                <p class="text-muted small">Aquí irá el número real cuando pongas la lógica.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="summary-card shadow-sm p-3 rounded-3">
+                <h5 class="text-secondary">Alquileres activos</h5>
+                <h2 class="fw-bold text-primary">--</h2>
+                <p class="text-muted small">Pendiente de integrar datos.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="summary-card shadow-sm p-3 rounded-3">
+                <h5 class="text-secondary">Reportes generados este mes</h5>
+                <h2 class="fw-bold text-primary">--</h2>
+                <p class="text-muted small">Se agregará luego.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE GRÁFICAS (PLACEHOLDERS) -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="chart-box shadow-sm rounded-3 p-4">
+                <h5 class="text-primary mb-3">Gráfica 1 (Placeholder)</h5>
+                <div class="chart-placeholder">Área para tu futura gráfica</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="chart-box shadow-sm rounded-3 p-4">
+                <h5 class="text-primary mb-3">Gráfica 2 (Placeholder)</h5>
+                <div class="chart-placeholder">Otra área de gráfica</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
 </html>

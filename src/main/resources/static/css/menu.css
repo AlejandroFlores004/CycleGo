@@ -1,0 +1,149 @@
+/* Navbar principal */
+.main-navbar {
+    background: linear-gradient(90deg, #0b1020, #111827);
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Sombra sutil */
+.main-navbar.shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+/* Marca / logo */
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-size: 1.25rem;
+}
+
+.brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.15); /* verde agua suave */
+    border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.brand-icon i {
+    font-size: 1.2rem;
+}
+
+.brand-text {
+    color: #e5e7eb;
+}
+
+/* Links generales */
+.main-menu .nav-link,
+.right-menu .nav-link {
+    position: relative;
+    color: #d1d5db !important; /* gris clarito */
+    font-weight: 500;
+    padding-inline: 0.85rem;
+    transition: color 0.2s ease, transform 0.15s ease;
+}
+
+/* Efecto hover */
+.main-menu .nav-link:hover,
+.right-menu .nav-link:hover {
+    color: #22c55e !important; /* verde más vivo */
+    transform: translateY(-1px);
+}
+
+/* Subrayado animado */
+.main-menu .nav-link::after,
+.right-menu .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.25rem;
+    height: 2px;
+    background: linear-gradient(90deg, #22c55e, #14b8a6);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.18s ease-out;
+}
+
+/* Hover muestra línea */
+.main-menu .nav-link:hover::after,
+.right-menu .nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* Item activo (según activePage) */
+.main-menu .active-nav > .nav-link,
+.main-menu .nav-item.active-nav .nav-link {
+    color: #22c55e !important;
+}
+
+.main-menu .active-nav > .nav-link::after {
+    transform: scaleX(1);
+}
+
+/* Dropdown de Reportes */
+.dropdown-menu-dark {
+    background-color: #020617;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 0.5rem;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
+.dropdown-menu-dark .dropdown-item {
+    color: #e5e7eb;
+    font-size: 0.92rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-menu-dark .dropdown-item:hover {
+    background-color: rgba(34, 197, 94, 0.12);
+    color: #22c55e;
+}
+
+/* Botón de salir */
+.btn-logout {
+    border-radius: 999px;
+    padding-inline: 1rem;
+}
+
+.btn-logout i {
+    font-size: 0.9rem;
+}
+
+/* Toggle en móvil */
+.custom-toggler {
+    border-color: rgba(148, 163, 184, 0.6);
+}
+
+.custom-toggler .navbar-toggler-icon {
+    filter: brightness(1.4);
+}
+
+/* Ajustes responsivos */
+@media (max-width: 991.98px) {
+    .main-menu .nav-link,
+    .right-menu .nav-link {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+    }
+
+    .main-menu .nav-link::after,
+    .right-menu .nav-link::after {
+        left: 0;
+        right: 0;
+        bottom: 0.15rem;
+    }
+
+    .right-menu {
+        margin-top: 0.4rem;
+        border-top: 1px solid rgba(31, 41, 55, 0.8);
+        padding-top: 0.4rem;
+    }
+}
