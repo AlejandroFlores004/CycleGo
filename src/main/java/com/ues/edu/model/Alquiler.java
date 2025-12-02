@@ -2,6 +2,8 @@ package com.ues.edu.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,7 +17,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,19 +49,16 @@ public class Alquiler {
     @JoinColumn(name = "id_usuario_registro", nullable = false)
     private Usuario usuarioRegistro;
 
-    @NotNull(message = "La fecha de alquiler es obligatoria")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_alquiler", nullable = false, updatable = false)
-    @PastOrPresent(message = "La fecha de alquiler no puede ser futura")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date fechaAlquiler;
 
-    @NotNull(message = "La fecha de devolución estimada es obligatoria")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_devolucion_estimada", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date fechaDevolucionEstimada;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_devolucion_real")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date fechaDevolucionReal;
 
     @NotNull(message = "El estado del alquiler es obligatorio")

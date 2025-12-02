@@ -23,28 +23,39 @@
                         <div class="mb-3">
                             <label for="cliente" class="form-label">Cliente</label>
                             <select class="form-select" id="cliente" th:field="*{cliente}">
-                                <option value="" disabled selected>Seleccione un cliente</option>
+                                <!-- Opción por defecto -->
+                                <option value="" 
+                                        disabled
+                                        th:selected="*{cliente} == null">
+                                    Seleccione un cliente
+                                </option>
+
                                 <option th:each="c : ${clientes}"
                                         th:value="${c.idCliente}"
                                         th:text="${c.nombres + ' ' + c.apellidos}">
                                 </option>
                             </select>
                             <div class="text-danger" th:if="${#fields.hasErrors('cliente')}"
-                                 th:errors="*{cliente}"></div>
+                                th:errors="*{cliente}"></div>
                         </div>
 
                         <!-- Bicicleta -->
                         <div class="mb-3">
                             <label for="bicicleta" class="form-label">Bicicleta</label>
                             <select class="form-select" id="bicicleta" th:field="*{bicicleta}">
-                                <option value="" disabled selected>Seleccione una bicicleta</option>
+                                <option value=""
+                                        disabled
+                                        th:selected="*{bicicleta} == null">
+                                    Seleccione una bicicleta
+                                </option>
+
                                 <option th:each="b : ${bicicletas}"
                                         th:value="${b.idBicicleta}"
                                         th:text="${b.codigo + ' - ' + b.modelo}">
                                 </option>
                             </select>
                             <div class="text-danger" th:if="${#fields.hasErrors('bicicleta')}"
-                                 th:errors="*{bicicleta}"></div>
+                                th:errors="*{bicicleta}"></div>
                         </div>
 
                         <!-- Usuario registro -->
@@ -67,9 +78,7 @@
                             <input type="datetime-local"
                                 id="fechaAlquiler"
                                 class="form-control"
-                                name="fechaAlquiler"
-                                th:value="${alquiler.fechaAlquiler != null ?
-                                            #dates.format(alquiler.fechaAlquiler, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                                th:field="*{fechaAlquiler}" />
                             <div class="text-danger" th:if="${#fields.hasErrors('fechaAlquiler')}"
                                 th:errors="*{fechaAlquiler}"></div>
                         </div>
@@ -80,25 +89,20 @@
                             <input type="datetime-local"
                                 id="fechaDevolucionEstimada"
                                 class="form-control"
-                                th:field="*{fechaDevolucionEstimada}"
-                                th:value="${alquiler.fechaDevolucionEstimada != null ?
-                                            #dates.format(alquiler.fechaDevolucionEstimada, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                                th:field="*{fechaDevolucionEstimada}" />
                             <div class="text-danger" th:if="${#fields.hasErrors('fechaDevolucionEstimada')}"
                                 th:errors="*{fechaDevolucionEstimada}"></div>
                         </div>
-
 
                         <!-- Fecha devolución real -->
                         <div class="mb-3">
                             <label for="fechaDevolucionReal" class="form-label">Fecha devolución real</label>
                             <input type="datetime-local"
-                                   id="fechaDevolucionReal"
-                                   class="form-control"
-                                   th:field="*{fechaDevolucionReal}"
-                                   th:value="${alquiler.fechaDevolucionReal != null ?
-                                             #dates.format(alquiler.fechaDevolucionReal, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                                id="fechaDevolucionReal"
+                                class="form-control"
+                                th:field="*{fechaDevolucionReal}" />
                             <div class="text-danger" th:if="${#fields.hasErrors('fechaDevolucionReal')}"
-                                 th:errors="*{fechaDevolucionReal}"></div>
+                                th:errors="*{fechaDevolucionReal}"></div>
                         </div>
 
                         <!-- Estado -->

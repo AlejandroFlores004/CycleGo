@@ -41,12 +41,14 @@
                             <td th:text="${alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos}">Cliente</td>
                             <td th:text="${alquiler.bicicleta.modelo}">Bicicleta</td>
                             <td th:text="${alquiler.usuarioRegistro.username}">Usuario</td>
-                            <td th:text="${#temporals.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">Fecha alquiler</td>
-                            <td th:text="${#temporals.format(alquiler.fechaDevolucionEstimada, 'dd/MM/yyyy HH:mm')}">
+                            <td th:text="${#dates.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">Fecha alquiler</td>
+
+                            <td th:text="${#dates.format(alquiler.fechaDevolucionEstimada, 'dd/MM/yyyy HH:mm')}">
                                 Fecha devolución estimada
                             </td>
+
                             <td th:text="${alquiler.fechaDevolucionReal != null ?
-                                         #temporals.format(alquiler.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">
+                                        #dates.format(alquiler.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">
                                 Fecha devolución real
                             </td>
                             <td>
