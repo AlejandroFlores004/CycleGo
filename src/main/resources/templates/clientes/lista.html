@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Cliente', 'clientes', ~{::section})}"> 
+
+<section class="clientes-lista">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 fw-bold text-primary">
+            Gestión de Clientes     
+        </h1>
+
+        <a class="btn btn-primary" th:href="@{/clientes/nuevo}">
+            <i class="bi bi-plus-circle"></i> Nuevo Cliente
+        </a>
+    </div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre Completo</th>
+                            <th>DUI</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Fecha de registro</th>
+                            <th>Usuario</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cliente, stat : ${clientes}">
+                            <td th:text="${stat.count}">1</td>
+                            <td th:text="${cliente.nombres + ' ' + cliente.apellidos}">Nombre del Cliente</td>
+                            <td th:text="${cliente.dui}">00000000-0</td>
+                            <td th:text="${cliente.telefono}">1234-5678</td>
+                            <td th:text="${cliente.email}">correo@example.com</td>
+                            <td th:text="${#dates.format(cliente.fechaRegistro, 'dd/MM/yyyy')}">01/01/2024</td>
+                            <td th:text="${cliente.usuario.username}">usuario</td>
+                            <td>
+                                <span th:if="${cliente.estado}" class="badge bg-success">Activo</span>
+                                <span th:if="${!cliente.estado}" class="badge bg-danger">Inactivo</span>
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary me-1"
+                                   th:href="@{'/clientes/editar/' + ${cliente.idCliente}}">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger"
+                                   th:href="@{'/clientes/eliminar/' + ${cliente.idCliente}}"
+                                   onclick="return confirm('¿Seguro que deseas eliminar a este cliente?');">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                    
+                    <tr th:if="${#lists.isEmpty(clientes)}">
+                        <td colspan="9" class="text-center">No hay clientes registrados.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+                            
+</section>
+</html>
