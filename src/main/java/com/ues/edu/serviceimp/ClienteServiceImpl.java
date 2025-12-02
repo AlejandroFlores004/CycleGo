@@ -39,4 +39,10 @@ public class ClienteServiceImpl implements IClienteService {
     public void eliminar(Long idCliente) {
         clienteRepository.deleteById(idCliente);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Cliente> findClientesActivosSinUsuario() {
+        return clienteRepository.findClientesActivosSinUsuario();
+    }
 }
