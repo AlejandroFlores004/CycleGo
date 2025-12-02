@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.ues.edu.model.Usuario;
-import com.ues.edu.serviceimp.UsuarioServiceImp;
+import com.ues.edu.serviceimp.UsuarioServiceImpl;
 
 @ControllerAdvice
 @Component
 public class GlobalAttributes {
 
-    private final UsuarioServiceImp usuarioService;
+    private final UsuarioServiceImpl usuarioService;
 
-    public GlobalAttributes(UsuarioServiceImp usuarioService) {
+    public GlobalAttributes(UsuarioServiceImpl usuarioService) {
         this.usuarioService = usuarioService;
     }
 

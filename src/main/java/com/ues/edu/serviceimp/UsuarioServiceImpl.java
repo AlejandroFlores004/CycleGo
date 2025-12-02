@@ -12,12 +12,12 @@ import com.ues.edu.service.IUsuarioService;
 
 @Service
 @Transactional
-public class UsuarioServiceImp implements IUsuarioService {
+public class UsuarioServiceImpl implements IUsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImp(UsuarioRepository usuarioRepository,
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
                              PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;

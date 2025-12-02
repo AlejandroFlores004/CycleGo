@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Alquiler', 'alquileres', ~{::section})}">
+
+<section class="alquiler-form">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0" th:text="${titulo}">Alquiler</h2>
+                </div>
+
+                <div class="card-body">
+                    <form th:action="@{${urlForm}}" th:object="${alquiler}" method="post">
+
+                        <!-- CSRF -->
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                        <!-- ID oculto -->
+                        <input type="hidden" th:field="*{idAlquiler}"/>
+
+                        <!-- Cliente -->
+                        <div class="mb-3">
+                            <label for="cliente" class="form-label">Cliente</label>
+                            <select class="form-select" id="cliente" th:field="*{cliente}">
+                                <option value="" disabled selected>Seleccione un cliente</option>
+                                <option th:each="c : ${clientes}"
+                                        th:value="${c.idCliente}"
+                                        th:text="${c.nombres + ' ' + c.apellidos}">
+                                </option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('cliente')}"
+                                 th:errors="*{cliente}"></div>
+                        </div>
+
+                        <!-- Bicicleta -->
+                        <div class="mb-3">
+                            <label for="bicicleta" class="form-label">Bicicleta</label>
+                            <select class="form-select" id="bicicleta" th:field="*{bicicleta}">
+                                <option value="" disabled selected>Seleccione una bicicleta</option>
+                                <option th:each="b : ${bicicletas}"
+                                        th:value="${b.idBicicleta}"
+                                        th:text="${b.codigo + ' - ' + b.modelo}">
+                                </option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('bicicleta')}"
+                                 th:errors="*{bicicleta}"></div>
+                        </div>
+
+                        <!-- Usuario registro -->
+                        <div class="mb-3">
+                            <label for="usuarioRegistro" class="form-label">Usuario registro</label>
+                            <select class="form-select" id="usuarioRegistro" th:field="*{usuarioRegistro}">
+                                <option value="" disabled selected>Seleccione un usuario</option>
+                                <option th:each="u : ${usuarios}"
+                                        th:value="${u.idUsuario}"
+                                        th:text="${u.username}">
+                                </option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('usuarioRegistro')}"
+                                 th:errors="*{usuarioRegistro}"></div>
+                        </div>
+
+                        <!-- Fecha alquiler -->
+                        <div class="mb-3">
+                            <label for="fechaAlquiler" class="form-label">Fecha alquiler</label>
+                            <input type="datetime-local"
+                                id="fechaAlquiler"
+                                class="form-control"
+                                name="fechaAlquiler"
+                                th:value="${alquiler.fechaAlquiler != null ?
+                                            #dates.format(alquiler.fechaAlquiler, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                            <div class="text-danger" th:if="${#fields.hasErrors('fechaAlquiler')}"
+                                th:errors="*{fechaAlquiler}"></div>
+                        </div>
+
+                        <!-- Fecha devolución estimada -->
+                        <div class="mb-3">
+                            <label for="fechaDevolucionEstimada" class="form-label">Fecha devolución estimada</label>
+                            <input type="datetime-local"
+                                id="fechaDevolucionEstimada"
+                                class="form-control"
+                                th:field="*{fechaDevolucionEstimada}"
+                                th:value="${alquiler.fechaDevolucionEstimada != null ?
+                                            #dates.format(alquiler.fechaDevolucionEstimada, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                            <div class="text-danger" th:if="${#fields.hasErrors('fechaDevolucionEstimada')}"
+                                th:errors="*{fechaDevolucionEstimada}"></div>
+                        </div>
+
+
+                        <!-- Fecha devolución real -->
+                        <div class="mb-3">
+                            <label for="fechaDevolucionReal" class="form-label">Fecha devolución real</label>
+                            <input type="datetime-local"
+                                   id="fechaDevolucionReal"
+                                   class="form-control"
+                                   th:field="*{fechaDevolucionReal}"
+                                   th:value="${alquiler.fechaDevolucionReal != null ?
+                                             #dates.format(alquiler.fechaDevolucionReal, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                            <div class="text-danger" th:if="${#fields.hasErrors('fechaDevolucionReal')}"
+                                 th:errors="*{fechaDevolucionReal}"></div>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estado" th:field="*{estado}">
+                                <option th:each="e : ${estados}"
+                                        th:value="${e}"
+                                        th:text="${e}">
+                                </option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('estado')}"
+                                 th:errors="*{estado}"></div>
+                        </div>
+
+                        <!-- Observaciones -->
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea id="observaciones"
+                                      class="form-control"
+                                      rows="3"
+                                      th:field="*{observaciones}"></textarea>
+                            <div class="text-danger" th:if="${#fields.hasErrors('observaciones')}"
+                                 th:errors="*{observaciones}"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a class="btn btn-secondary" th:href="@{/alquileres}">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</html>

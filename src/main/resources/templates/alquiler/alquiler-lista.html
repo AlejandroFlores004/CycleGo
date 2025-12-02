@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Alquileres', 'alquileres', ~{::section})}">
+
+<section class="alquileres-lista">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 fw-bold text-primary">
+            Gestión de alquileres
+        </h1>
+
+        <a class="btn btn-primary" th:href="@{/alquileres/nuevo}">
+            <i class="bi bi-plus-circle"></i> Nuevo alquiler
+        </a>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Bicicleta</th>
+                            <th>Usuario registro</th>
+                            <th>Fecha alquiler</th>
+                            <th>Fecha devolución estimada</th>
+                            <th>Fecha devolución real</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="alquiler, iter : ${alquileres}">
+                            <td th:text="${iter.index + 1}"></td>
+                            <td th:text="${alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos}">Cliente</td>
+                            <td th:text="${alquiler.bicicleta.modelo}">Bicicleta</td>
+                            <td th:text="${alquiler.usuarioRegistro.username}">Usuario</td>
+                            <td th:text="${#temporals.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">Fecha alquiler</td>
+                            <td th:text="${#temporals.format(alquiler.fechaDevolucionEstimada, 'dd/MM/yyyy HH:mm')}">
+                                Fecha devolución estimada
+                            </td>
+                            <td th:text="${alquiler.fechaDevolucionReal != null ?
+                                         #temporals.format(alquiler.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">
+                                Fecha devolución real
+                            </td>
+                            <td>
+                                <span class="badge bg-info" th:text="${alquiler.estado}">ESTADO</span>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{'/alquileres/editar/' + ${alquiler.idAlquiler}}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-danger"
+                                   th:href="@{'/alquileres/eliminar/' + ${alquiler.idAlquiler}}"
+                                   onclick="return confirm('¿Seguro que deseas eliminar este alquiler?');">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(alquileres)}">
+                            <td colspan="9" class="text-center text-muted">
+                                No hay alquileres registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section>
+</html>
