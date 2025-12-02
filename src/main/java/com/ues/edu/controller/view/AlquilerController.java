@@ -41,9 +41,8 @@ public class AlquilerController {
 
     @GetMapping
     public String listarAlquileres(Model model) {
-        model.addAttribute("titulo", "Gestión de alquileres");
-        model.addAttribute("alquileres", alquilerService.listarTodos());
-        model.addAttribute("pagos", pagoAlquilerService.listarTodos());
+        model.addAttribute("titulo", "Alquileres activos");
+        model.addAttribute("alquileres", alquilerService.listarActivos()); // solo activos
         return "alquiler/alquiler-lista";
     }
 

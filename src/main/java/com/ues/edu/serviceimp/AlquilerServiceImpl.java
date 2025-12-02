@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ues.edu.model.Alquiler;
 import com.ues.edu.model.Bicicleta;
+import com.ues.edu.model.EstadoAlquiler;
 import com.ues.edu.model.EstadoBicicleta;
 import com.ues.edu.model.PagoAlquiler;
 import com.ues.edu.repository.AlquilerRepository;
@@ -64,5 +65,10 @@ public class AlquilerServiceImpl implements IAlquilerService {
         }
 
         alquilerRepository.delete(alquiler);
+    }
+
+    @Override
+    public List<Alquiler> listarActivos() {
+        return alquilerRepository.findByEstado(EstadoAlquiler.ACTIVO);
     }
 }

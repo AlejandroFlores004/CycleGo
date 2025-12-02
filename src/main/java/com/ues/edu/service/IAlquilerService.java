@@ -13,4 +13,7 @@ public interface IAlquilerService {
     Alquiler guardar(Alquiler alquiler);
 
     void eliminar(Long idAlquiler);
+
+    List<Alquiler> listarActivos();
+
 }
