@@ -18,8 +18,13 @@
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <div class="card shadow-sm">
+    <!-- =========================
+         TABLA DE ALQUILERES
+         ========================= -->
+    <div class="card shadow-sm mb-4">
         <div class="card-body">
+            <h2 class="h5 fw-bold mb-3">Alquileres</h2>
+
             <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead>
@@ -41,7 +46,9 @@
                             <td th:text="${alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos}">Cliente</td>
                             <td th:text="${alquiler.bicicleta.modelo}">Bicicleta</td>
                             <td th:text="${alquiler.usuarioRegistro.username}">Usuario</td>
-                            <td th:text="${#dates.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">Fecha alquiler</td>
+                            <td th:text="${#dates.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">
+                                Fecha alquiler
+                            </td>
 
                             <td th:text="${#dates.format(alquiler.fechaDevolucionEstimada, 'dd/MM/yyyy HH:mm')}">
                                 Fecha devolución estimada
@@ -51,13 +58,28 @@
                                         #dates.format(alquiler.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">
                                 Fecha devolución real
                             </td>
+
                             <td>
                                 <span class="badge bg-info" th:text="${alquiler.estado}">ESTADO</span>
                             </td>
+
                             <td>
                                 <a class="btn btn-sm btn-outline-primary"
                                    th:href="@{'/alquileres/editar/' + ${alquiler.idAlquiler}}">
                                     <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <!-- Botón de pago: si no tiene, registrar; si ya tiene, editar -->
+                                <a class="btn btn-sm btn-outline-success"
+                                   th:if="${alquiler.pagoAlquiler == null}"
+                                   th:href="@{'/alquileres/' + ${alquiler.idAlquiler} + '/pago/nuevo'}">
+                                    <i class="bi bi-cash-coin"></i>
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-warning"
+                                   th:if="${alquiler.pagoAlquiler != null}"
+                                   th:href="@{'/alquileres/' + ${alquiler.idAlquiler} + '/pago/editar'}">
+                                    <i class="bi bi-receipt"></i>
                                 </a>
 
                                 <a class="btn btn-sm btn-outline-danger"
@@ -70,6 +92,73 @@
                         <tr th:if="${#lists.isEmpty(alquileres)}">
                             <td colspan="9" class="text-center text-muted">
                                 No hay alquileres registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         TABLA DE PAGOS DE ALQUILER
+         ========================= -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="h5 fw-bold mb-3">Pagos de alquiler</h2>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Bicicleta</th>
+                            <th>Monto total</th>
+                            <th>Método de pago</th>
+                            <th>Fecha de pago</th>
+                            <th>Estado pago</th>
+                            <th>Usuario registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="pago, iter : ${pagos}">
+                            <td th:text="${iter.index + 1}"></td>
+                            <td th:text="${pago.alquiler.cliente.nombres + ' ' + pago.alquiler.cliente.apellidos}">
+                                Cliente
+                            </td>
+                            <td th:text="${pago.alquiler.bicicleta.modelo}">
+                                Bicicleta
+                            </td>
+                            <td th:text="${pago.montoTotal}">
+                                Monto total
+                            </td>
+                            <td th:text="${pago.metodoPago}">
+                                Método de pago
+                            </td>
+                            <td th:text="${#dates.format(pago.fechaPago, 'dd/MM/yyyy HH:mm')}">
+                                Fecha de pago
+                            </td>
+                            <td>
+                                <span class="badge bg-success" th:text="${pago.estado}">
+                                    Estado pago
+                                </span>
+                            </td>
+                            <td th:text="${pago.usuarioRegistro.username}">
+                                Usuario
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-warning"
+                                   th:href="@{'/alquileres/' + ${pago.alquiler.idAlquiler} + '/pago/editar'}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(pagos)}">
+                            <td colspan="9" class="text-center text-muted">
+                                No hay pagos registrados.
                             </td>
                         </tr>
                     </tbody>

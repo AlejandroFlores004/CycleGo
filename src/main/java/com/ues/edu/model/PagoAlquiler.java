@@ -38,7 +38,6 @@ public class PagoAlquiler {
     @Column(name = "id_pago_alquiler")
     private Long idPagoAlquiler;
 
-    @NotNull(message = "El alquiler asociado es obligatorio")
     @OneToOne
     @JoinColumn(name = "id_alquiler", nullable = false, unique = true)
     private Alquiler alquiler;
@@ -54,7 +53,6 @@ public class PagoAlquiler {
     @Column(name = "metodo_pago", nullable = false, length = 20)
     private MetodoPago metodoPago;
 
-    @NotNull(message = "La fecha de pago es obligatoria")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_pago", nullable = false)
     @PastOrPresent(message = "La fecha de pago no puede ser futura")
@@ -68,12 +66,10 @@ public class PagoAlquiler {
     @Column(name = "observaciones", length = 250)
     private String observaciones;
 
-    @NotNull(message = "El estado del pago es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 20)
     private EstadoPago estado;
 
-    @NotNull(message = "El usuario que registró el pago es obligatorio")
     @ManyToOne
     @JoinColumn(name = "id_usuario_registro", nullable = false)
     private Usuario usuarioRegistro;
@@ -84,7 +80,7 @@ public class PagoAlquiler {
             this.fechaPago = new Date();
         }
         if (this.estado == null) {
-            this.estado = EstadoPago.PAGADO;
+            this.estado = EstadoPago.PENDIENTE;
         }
     }
 }

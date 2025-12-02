@@ -2,6 +2,7 @@ package com.ues.edu.controller.view;
 
 import java.util.Date;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,9 +14,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ues.edu.model.Alquiler;
 import com.ues.edu.model.EstadoAlquiler;
+import com.ues.edu.model.MetodoPago;
+import com.ues.edu.model.PagoAlquiler;
+import com.ues.edu.model.Usuario;
 import com.ues.edu.service.IAlquilerService;
 import com.ues.edu.service.IBicicletaService;
 import com.ues.edu.service.IClienteService;
+import com.ues.edu.service.IPagoAlquilerService;
 import com.ues.edu.service.IUsuarioService;
 
 import jakarta.validation.Valid;
@@ -30,19 +35,23 @@ public class AlquilerController {
     private final IClienteService clienteService;
     private final IBicicletaService bicicletaService;
     private final IUsuarioService usuarioService;
+    private final IPagoAlquilerService pagoAlquilerService;
 
     @GetMapping
     public String listarAlquileres(Model model) {
         model.addAttribute("titulo", "Gestión de alquileres");
         model.addAttribute("alquileres", alquilerService.listarTodos());
+        model.addAttribute("pagos", pagoAlquilerService.listarTodos());
         return "alquiler/alquiler-lista";
     }
+
 
     @GetMapping("/nuevo")
     public String nuevoAlquiler(Model model) {
         Alquiler alquiler = new Alquiler();
-        alquiler.setFechaAlquiler(new Date());       // fecha actual
-        alquiler.setEstado(EstadoAlquiler.ACTIVO);   // ajusta si tu enum tiene otro nombre
+
+        alquiler.setFechaAlquiler(new Date());
+        alquiler.setEstado(EstadoAlquiler.ACTIVO);
 
         cargarListas(model);
         model.addAttribute("alquiler", alquiler);
@@ -72,21 +81,40 @@ public class AlquilerController {
             @Valid Alquiler alquiler,
             BindingResult result,
             Model model,
-            RedirectAttributes flash) {
+            RedirectAttributes flash,
+            Authentication authentication
+    ) {
+
+        boolean esNuevo = (alquiler.getIdAlquiler() == null);
 
         if (result.hasErrors()) {
             cargarListas(model);
-            model.addAttribute("titulo", alquiler.getIdAlquiler() == null ? "Nuevo alquiler" : "Editar alquiler");
+            model.addAttribute("titulo", esNuevo ? "Nuevo alquiler" : "Editar alquiler");
             model.addAttribute("urlForm", "/alquileres/guardar");
             return "alquiler/alquiler-form";
         }
 
-        // Si quieres asegurar fecha de alquiler cuando es nuevo
-        if (alquiler.getIdAlquiler() == null && alquiler.getFechaAlquiler() == null) {
+        // Usuario de registro
+        if (alquiler.getUsuarioRegistro() == null && authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Usuario usuario = usuarioService.buscarPorUsername(username);
+            alquiler.setUsuarioRegistro(usuario);
+        }
+
+        // Si es nuevo, asignar fecha y estado
+        if (esNuevo) {
             alquiler.setFechaAlquiler(new Date());
+            alquiler.setEstado(EstadoAlquiler.ACTIVO);
         }
 
         alquilerService.guardar(alquiler);
+
+        // Si es nuevo → después de guardar, redireccionar al formulario de pago
+        if (esNuevo) {
+            flash.addFlashAttribute("success", "Alquiler guardado correctamente, ahora registre el pago.");
+            return "redirect:/alquileres/" + alquiler.getIdAlquiler() + "/pago/nuevo";
+        }
+
         flash.addFlashAttribute("success", "Alquiler guardado correctamente");
         return "redirect:/alquileres";
     }
@@ -105,10 +133,112 @@ public class AlquilerController {
         return "redirect:/alquileres";
     }
 
+    // =========================
+    //      PAGO ALQUILER
+    // =========================
+
+    @GetMapping("/{id}/pago/nuevo")
+    public String nuevoPagoAlquiler(@PathVariable("id") Long idAlquiler,
+                                    Model model,
+                                    RedirectAttributes flash,
+                                    Authentication authentication) {
+
+        Alquiler alquiler = alquilerService.buscarPorId(idAlquiler);
+        if (alquiler == null) {
+            flash.addFlashAttribute("error", "El alquiler no existe");
+            return "redirect:/alquileres";
+        }
+
+        // Si ya tiene pago, redirigimos a editar
+        PagoAlquiler existente = pagoAlquilerService.buscarPorAlquiler(alquiler);
+        if (existente != null) {
+            return "redirect:/alquileres/" + idAlquiler + "/pago/editar";
+        }
+
+        PagoAlquiler pago = new PagoAlquiler();
+        pago.setAlquiler(alquiler);
+        // usuarioRegistro se asignará en el POST
+        // fechaPago y estado se asignan en @PrePersist si están null
+
+        model.addAttribute("alquiler", alquiler);
+        model.addAttribute("pago", pago);
+        model.addAttribute("metodosPago", MetodoPago.values());
+        model.addAttribute("titulo", "Registrar pago de alquiler");
+        model.addAttribute("urlForm", "/alquileres/" + idAlquiler + "/pago/guardar");
+
+        return "alquiler/pago-alquiler-form";
+    }
+
+    @GetMapping("/{id}/pago/editar")
+    public String editarPagoAlquiler(@PathVariable("id") Long idAlquiler,
+                                     Model model,
+                                     RedirectAttributes flash) {
+
+        Alquiler alquiler = alquilerService.buscarPorId(idAlquiler);
+        if (alquiler == null) {
+            flash.addFlashAttribute("error", "El alquiler no existe");
+            return "redirect:/alquileres";
+        }
+
+        PagoAlquiler pago = pagoAlquilerService.buscarPorAlquiler(alquiler);
+        if (pago == null) {
+            flash.addFlashAttribute("error", "Este alquiler aún no tiene pago registrado");
+            return "redirect:/alquileres/" + idAlquiler + "/pago/nuevo";
+        }
+
+        model.addAttribute("alquiler", alquiler);
+        model.addAttribute("pago", pago);
+        model.addAttribute("metodosPago", MetodoPago.values());
+        model.addAttribute("titulo", "Editar pago de alquiler");
+        model.addAttribute("urlForm", "/alquileres/" + idAlquiler + "/pago/guardar");
+
+        return "alquiler/pago-alquiler-form";
+    }
+
+    @PostMapping("/{id}/pago/guardar")
+    public String guardarPagoAlquiler(@PathVariable("id") Long idAlquiler,
+                                      @Valid PagoAlquiler pago,
+                                      BindingResult result,
+                                      Model model,
+                                      RedirectAttributes flash,
+                                      Authentication authentication) {
+
+        Alquiler alquiler = alquilerService.buscarPorId(idAlquiler);
+        if (alquiler == null) {
+            flash.addFlashAttribute("error", "El alquiler no existe");
+            return "redirect:/alquileres";
+        }
+
+        boolean esNuevo = (pago.getIdPagoAlquiler() == null);
+
+        // Reforzamos el alquiler por seguridad
+        pago.setAlquiler(alquiler);
+
+        if (result.hasErrors()) {
+            model.addAttribute("alquiler", alquiler);
+            model.addAttribute("pago", pago);
+            model.addAttribute("metodosPago", MetodoPago.values());
+            model.addAttribute("titulo", esNuevo ? "Registrar pago de alquiler" : "Editar pago de alquiler");
+            model.addAttribute("urlForm", "/alquileres/" + idAlquiler + "/pago/guardar");
+            return "alquiler/pago-alquiler-form";
+        }
+
+        // Asignar usuarioRegistro
+        if (pago.getUsuarioRegistro() == null && authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Usuario usuario = usuarioService.buscarPorUsername(username);
+            pago.setUsuarioRegistro(usuario);
+        }
+
+        // fechaPago y estado los maneja @PrePersist si están null
+        pagoAlquilerService.guardar(pago);
+
+        flash.addFlashAttribute("success", "Pago de alquiler guardado correctamente");
+        return "redirect:/alquileres";
+    }
+
     private void cargarListas(Model model) {
         model.addAttribute("clientes", clienteService.listarTodos());
         model.addAttribute("bicicletas", bicicletaService.listarTodas());
-        model.addAttribute("usuarios", usuarioService.listarTodos());
-        model.addAttribute("estados", EstadoAlquiler.values());
     }
 }

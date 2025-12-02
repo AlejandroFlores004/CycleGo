@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -44,7 +45,6 @@ public class Alquiler {
     @JoinColumn(name = "id_bicicleta", nullable = false)
     private Bicicleta bicicleta;
 
-    @NotNull(message = "El usuario de registro es obligatorio")
     @ManyToOne
     @JoinColumn(name = "id_usuario_registro", nullable = false)
     private Usuario usuarioRegistro;
@@ -61,7 +61,6 @@ public class Alquiler {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date fechaDevolucionReal;
 
-    @NotNull(message = "El estado del alquiler es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 20)
     private EstadoAlquiler estado;
@@ -70,4 +69,6 @@ public class Alquiler {
     @Column(name = "observaciones", length = 250)
     private String observaciones;
 
+    @OneToOne(mappedBy = "alquiler")
+    private PagoAlquiler pagoAlquiler;  
 }
