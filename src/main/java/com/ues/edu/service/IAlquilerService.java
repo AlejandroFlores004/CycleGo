@@ -16,4 +16,9 @@ public interface IAlquilerService {
 
     List<Alquiler> listarActivos();
 
+    List<Alquiler> listarFinalizados();
+    void finalizarAlquiler(Long id);
+
+
+
 }

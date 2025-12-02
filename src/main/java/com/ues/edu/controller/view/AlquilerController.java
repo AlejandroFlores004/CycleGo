@@ -1,6 +1,11 @@
 package com.ues.edu.controller.view;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -41,8 +46,34 @@ public class AlquilerController {
 
     @GetMapping
     public String listarAlquileres(Model model) {
-        model.addAttribute("titulo", "Alquileres activos");
-        model.addAttribute("alquileres", alquilerService.listarActivos()); // solo activos
+        model.addAttribute("titulo", "Alquileres");
+
+        // Trae solo activos
+        List<Alquiler> activos = alquilerService.listarActivos();
+        model.addAttribute("alquileres", activos);
+
+        // Trae finalizados para la sección inferior
+        model.addAttribute("finalizados", alquilerService.listarFinalizados());
+
+        // Construir mapa canFinalize: alquilerId -> true/false
+        Map<Long, Boolean> canFinalize = new HashMap<>();
+        LocalDate hoy = LocalDate.now(ZoneId.systemDefault());
+
+        for (Alquiler a : activos) {
+            boolean permitir = false;
+            if (a.getFechaDevolucionEstimada() != null) {
+                LocalDate fechaEstimada = a.getFechaDevolucionEstimada()
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                // permitir si fechaEstimada es <= hoy
+                permitir = !fechaEstimada.isAfter(hoy);
+            }
+            canFinalize.put(a.getIdAlquiler(), permitir);
+        }
+
+        model.addAttribute("canFinalize", canFinalize);
+
         return "alquiler/alquiler-lista";
     }
 
@@ -260,5 +291,18 @@ public class AlquilerController {
     private void cargarListas(Model model) {
         model.addAttribute("clientes", clienteService.listarTodos());
         model.addAttribute("bicicletas", bicicletaService.listarTodas());
+    }
+
+    @GetMapping("/finalizar/{id}")
+    public String finalizar(@PathVariable Long id, RedirectAttributes flash) {
+        Alquiler alquiler = alquilerService.buscarPorId(id);
+        if (alquiler == null) {
+            flash.addFlashAttribute("error", "El alquiler no existe");
+            return "redirect:/alquileres";
+        }
+
+        alquilerService.finalizarAlquiler(id);
+        flash.addFlashAttribute("success", "Alquiler finalizado correctamente");
+        return "redirect:/alquileres";
     }
 }

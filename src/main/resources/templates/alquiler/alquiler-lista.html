@@ -1,142 +1,138 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout('CycleGo | Alquileres activos', 'alquileres', ~{::section})}">
+      th:replace="~{layout/base :: layout('CycleGo | Alquileres', 'alquileres', ~{::section})}">
 
 <section class="alquileres-lista">
 
-    <!-- ENCABEZADO -->
+    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3 fw-bold text-primary">
-            Alquileres activos
-        </h1>
-
+        <h1 class="h3 fw-bold text-primary">Alquileres</h1>
         <a class="btn btn-primary" th:href="@{/alquileres/nuevo}">
             <i class="bi bi-plus-circle"></i> Nuevo alquiler
         </a>
     </div>
 
-    <!-- Mensajes flash -->
+    <!-- FLASH -->
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <!-- CONTENEDOR DE TARJETAS -->
-    <div th:if="${#lists.isEmpty(alquileres)}" class="text-center text-muted py-4">
-        No hay alquileres activos en este momento.
-    </div>
+    <!-- =========================
+         ALQUILERES ACTIVOS
+         ========================= -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="h5 fw-bold mb-3">Alquileres activos</h2>
 
-    <div th:if="${!#lists.isEmpty(alquileres)}"
-         class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div th:if="${#lists.isEmpty(alquileres)}" class="text-center text-muted py-4">
+                No hay alquileres activos en este momento.
+            </div>
 
-        <!-- TARJETA DE ALQUILER ACTIVO -->
-        <div class="col" th:each="alquiler, iter : ${alquileres}"
-             th:if="${alquiler.estado.name() == 'ACTIVO'}">
-            <div class="card h-100 shadow-sm border-0">
+            <div th:if="${!#lists.isEmpty(alquileres)}" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                <div class="col" th:each="alquiler : ${alquileres}">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold" th:text="${alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos}">Cliente</span>
+                                <div class="text-muted small" th:text="${alquiler.bicicleta.modelo}">Bici</div>
+                            </div>
+                            <span class="badge bg-info">ACTIVO</span>
+                        </div>
 
-                <!-- HEADER -->
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <div>
-                        <span class="fw-bold"
-                              th:text="${alquiler.cliente.nombres + ' ' + alquiler.cliente.apellidos}">
-                            Nombre cliente
-                        </span>
-                        <div class="text-muted small"
-                             th:text="${alquiler.bicicleta.modelo}">
-                            Modelo bicicleta
+                        <div class="card-body">
+                            <p class="mb-1"><strong>Usuario registro:</strong> <span th:text="${alquiler.usuarioRegistro.username}">usuario</span></p>
+                            <p class="mb-1"><strong>Fecha alquiler:</strong> <span th:text="${#dates.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">--</span></p>
+                            <p class="mb-1"><strong>Fecha devolución estimada:</strong> <span th:text="${#dates.format(alquiler.fechaDevolucionEstimada, 'dd/MM/yyyy HH:mm')}">--</span></p>
+                            <p class="mb-1"><strong>Fecha devolución real:</strong> <span th:text="${alquiler.fechaDevolucionReal != null ? #dates.format(alquiler.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">-</span></p>
+                            <p class="mb-0"><strong>Estado pago:</strong>
+                                <span th:if="${alquiler.pagoAlquiler == null}" class="badge bg-danger">PENDIENTE</span>
+                                <span th:if="${alquiler.pagoAlquiler != null}" th:text="${alquiler.pagoAlquiler.estado}" class="badge bg-success">PAGADO</span>
+                            </p>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+
+                                <a class="btn btn-sm btn-outline-success" th:if="${alquiler.pagoAlquiler == null}"
+                                   th:href="@{'/alquileres/' + ${alquiler.idAlquiler} + '/pago/nuevo'}" title="Registrar pago">
+                                    <i class="bi bi-cash-coin"></i>
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-warning" th:if="${alquiler.pagoAlquiler != null}"
+                                   th:href="@{'/alquileres/' + ${alquiler.idAlquiler} + '/pago/editar'}" title="Editar pago">
+                                    <i class="bi bi-receipt"></i>
+                                </a>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <!-- Finalizar -->
+                                <a class="btn btn-sm btn-outline-primary"
+                                th:if="${canFinalize[alquiler.idAlquiler]}"
+                                th:href="@{'/alquileres/finalizar/' + ${alquiler.idAlquiler}}">
+                                    <i class="bi bi-check2-circle"></i> Finalizar
+                                </a>
+
+                                <!-- Si no se permite finalizar: mostrar botón deshabilitado o etiqueta -->
+                                <button class="btn btn-sm btn-outline-secondary" th:if="${!canFinalize[alquiler.idAlquiler]}" disabled
+                                        title="Solo se puede finalizar cuando la fecha de devolución estimada sea hoy o pasada">
+                                    <i class="bi bi-clock"></i> Finalizar
+                                </button>
+
+                                <!-- Eliminar -->
+                                <a class="btn btn-sm btn-outline-danger"
+                                   th:href="@{'/alquileres/eliminar/' + ${alquiler.idAlquiler}}"
+                                   onclick="return confirm('¿Seguro que deseas eliminar este alquiler?');">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-                    <span class="badge bg-info">
-                        ACTIVO
-                    </span>
                 </div>
-
-                <!-- BODY -->
-                <div class="card-body">
-                    <p class="mb-1">
-                        <strong>Usuario registro:</strong>
-                        <span th:text="${alquiler.usuarioRegistro.username}">usuario</span>
-                    </p>
-
-                    <p class="mb-1">
-                        <strong>Fecha alquiler:</strong>
-                        <span th:text="${#dates.format(alquiler.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">
-                            --
-                        </span>
-                    </p>
-
-                    <p class="mb-1">
-                        <strong>Fecha devolución estimada:</strong>
-                        <span th:text="${#dates.format(alquiler.fechaDevolucionEstimada, 'dd/MM/yyyy HH:mm')}">
-                            --
-                        </span>
-                    </p>
-
-                    <p class="mb-1">
-                        <strong>Fecha devolución real:</strong>
-                        <span th:text="${alquiler.fechaDevolucionReal != null ?
-                                        #dates.format(alquiler.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">
-                            -
-                        </span>
-                    </p>
-
-                    <p class="mb-0">
-                        <strong>Estado pago:</strong>
-                        <span th:if="${alquiler.pagoAlquiler == null}" class="badge bg-danger">
-                            PENDIENTE
-                        </span>
-                        <span th:if="${alquiler.pagoAlquiler != null}"
-                              th:text="${alquiler.pagoAlquiler.estado}"
-                              class="badge bg-success">
-                            PAGADO
-                        </span>
-                    </p>
-                </div>
-
-                <!-- FOOTER: BOTONES -->
-                <div class="card-footer d-flex justify-content-between align-items-center">
-
-                    <div class="btn-group">
-
-                        <!-- Registrar / Editar pago -->
-                        <a class="btn btn-sm btn-outline-success"
-                           th:if="${alquiler.pagoAlquiler == null}"
-                           th:href="@{'/alquileres/' + ${alquiler.idAlquiler} + '/pago/nuevo'}"
-                           title="Registrar pago">
-                            <i class="bi bi-cash-coin"></i>
-                        </a>
-
-                        <a class="btn btn-sm btn-outline-warning"
-                           th:if="${alquiler.pagoAlquiler != null}"
-                           th:href="@{'/alquileres/' + ${alquiler.idAlquiler} + '/pago/editar'}"
-                           title="Editar pago">
-                            <i class="bi bi-receipt"></i>
-                        </a>
-
-                    </div>
-
-                    <div class="d-flex gap-2">
-
-                        <!-- Finalizar alquiler -->
-                        <a class="btn btn-sm btn-outline-primary"
-                           th:href="@{'/alquileres/finalizar/' + ${alquiler.idAlquiler}}">
-                            <i class="bi bi-check2-circle"></i> Finalizar
-                        </a>
-
-                        <!-- Eliminar alquiler -->
-                        <a class="btn btn-sm btn-outline-danger"
-                           th:href="@{'/alquileres/eliminar/' + ${alquiler.idAlquiler}}"
-                           onclick="return confirm('¿Seguro que deseas eliminar este alquiler?');">
-                            <i class="bi bi-trash"></i>
-                        </a>
-
-                    </div>
-
-                </div>
-
             </div>
-        </div>
-        <!-- FIN TARJETA -->
 
+        </div>
+    </div>
+
+    <!-- =========================
+         ALQUILERES FINALIZADOS (solo vista)
+         ========================= -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="h5 fw-bold mb-3">Alquileres finalizados</h2>
+
+            <div th:if="${#lists.isEmpty(finalizados)}" class="text-center text-muted py-4">
+                No hay alquileres finalizados.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(finalizados)}" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                <div class="col" th:each="alq : ${finalizados}">
+                    <div class="card h-100 border-0">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold" th:text="${alq.cliente.nombres + ' ' + alq.cliente.apellidos}">Cliente</span>
+                                <div class="text-muted small" th:text="${alq.bicicleta.modelo}">Bici</div>
+                            </div>
+                            <span class="badge bg-secondary">FINALIZADO</span>
+                        </div>
+
+                        <div class="card-body">
+                            <p class="mb-1"><strong>Usuario registro:</strong> <span th:text="${alq.usuarioRegistro.username}">usuario</span></p>
+                            <p class="mb-1"><strong>Fecha alquiler:</strong> <span th:text="${#dates.format(alq.fechaAlquiler, 'dd/MM/yyyy HH:mm')}">--</span></p>
+                            <p class="mb-1"><strong>Fecha devolución real:</strong> <span th:text="${alq.fechaDevolucionReal != null ? #dates.format(alq.fechaDevolucionReal, 'dd/MM/yyyy HH:mm') : '-'}">-</span></p>
+                            <p class="mb-0"><strong>Pago:</strong>
+                                <span th:if="${alq.pagoAlquiler == null}" class="badge bg-danger">SIN PAGO</span>
+                                <span th:if="${alq.pagoAlquiler != null}" th:text="${alq.pagoAlquiler.estado}" class="badge bg-success">PAGADO</span>
+                            </p>
+                        </div>
+
+                        <div class="card-footer text-end">
+                            <!-- Sin botones de editar/eliminar -->
+                            <small class="text-muted">Solo lectura</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 </section>

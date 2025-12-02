@@ -1,5 +1,6 @@
 package com.ues.edu.serviceimp;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import com.ues.edu.model.Alquiler;
 import com.ues.edu.model.Bicicleta;
 import com.ues.edu.model.EstadoAlquiler;
 import com.ues.edu.model.EstadoBicicleta;
+import com.ues.edu.model.EstadoPago;
 import com.ues.edu.model.PagoAlquiler;
 import com.ues.edu.repository.AlquilerRepository;
 import com.ues.edu.repository.BicicletaRepository;
@@ -70,5 +72,44 @@ public class AlquilerServiceImpl implements IAlquilerService {
     @Override
     public List<Alquiler> listarActivos() {
         return alquilerRepository.findByEstado(EstadoAlquiler.ACTIVO);
+    }
+
+     @Override
+    public List<Alquiler> listarFinalizados() {
+        return alquilerRepository.findByEstado(EstadoAlquiler.FINALIZADO);
+    }
+
+    @Override
+    @Transactional
+    public void finalizarAlquiler(Long id) {
+        Alquiler alquiler = alquilerRepository.findById(id).orElse(null);
+        if (alquiler == null) return;
+
+        // 1) marcar alquiler finalizado y fecha devolución real (ahora)
+        alquiler.setEstado(EstadoAlquiler.FINALIZADO);
+        Date ahora = new Date();
+        alquiler.setFechaDevolucionReal(ahora);
+
+        // 2) liberar bicicleta
+        if (alquiler.getBicicleta() != null) {
+            alquiler.getBicicleta().setEstado(EstadoBicicleta.DISPONIBLE);
+            bicicletaRepository.save(alquiler.getBicicleta());
+        }
+
+        // 3) marcar pago como PAGADO y poner fechaPago = hoy si existe
+        PagoAlquiler pago = pagoAlquilerRepository
+                        .findByAlquiler(alquiler)
+                        .orElse(null);
+        if (pago != null) {
+            // Si pago.estado es enum, usar el enum; si es String, setear "PAGADO"
+            // ejemplo para String:
+            pago.setEstado(EstadoPago.PAGADO);
+            // setear fechaPago con 'ahora' (o con fecha sin hora si prefieres)
+            pago.setFechaPago(ahora);
+            pagoAlquilerRepository.save(pago);
+        }
+
+        // 4) guardar alquiler
+        alquilerRepository.save(alquiler);
     }
 }

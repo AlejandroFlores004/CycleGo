@@ -12,4 +12,7 @@ public interface PagoAlquilerRepository extends JpaRepository<PagoAlquiler, Long
     Optional<PagoAlquiler> findByAlquiler(Alquiler alquiler);
 
     boolean existsByAlquiler(Alquiler alquiler);
+
+
+
 }
