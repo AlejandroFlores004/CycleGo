@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ues.edu.model.Alquiler;
+import com.ues.edu.model.Bicicleta;
 import com.ues.edu.model.EstadoAlquiler;
+import com.ues.edu.model.EstadoBicicleta;
 import com.ues.edu.model.MetodoPago;
 import com.ues.edu.model.PagoAlquiler;
 import com.ues.edu.model.Usuario;
@@ -53,12 +55,17 @@ public class AlquilerController {
         alquiler.setFechaAlquiler(new Date());
         alquiler.setEstado(EstadoAlquiler.ACTIVO);
 
-        cargarListas(model);
+        // Clientes: todos
+        model.addAttribute("clientes", clienteService.listarTodos());
+        // Bicicletas: SOLO DISPONIBLES
+        model.addAttribute("bicicletas", bicicletaService.listarDisponibles());
+
         model.addAttribute("alquiler", alquiler);
         model.addAttribute("titulo", "Nuevo alquiler");
         model.addAttribute("urlForm", "/alquileres/guardar");
         return "alquiler/alquiler-form";
     }
+
 
     @GetMapping("/editar/{id}")
     public String editarAlquiler(@PathVariable("id") Long id, Model model, RedirectAttributes flash) {
@@ -88,7 +95,12 @@ public class AlquilerController {
         boolean esNuevo = (alquiler.getIdAlquiler() == null);
 
         if (result.hasErrors()) {
-            cargarListas(model);
+            model.addAttribute("clientes", clienteService.listarTodos());
+            if (esNuevo) {
+                model.addAttribute("bicicletas", bicicletaService.listarDisponibles());
+            } else {
+                model.addAttribute("bicicletas", bicicletaService.listarTodas());
+            }
             model.addAttribute("titulo", esNuevo ? "Nuevo alquiler" : "Editar alquiler");
             model.addAttribute("urlForm", "/alquileres/guardar");
             return "alquiler/alquiler-form";
@@ -107,9 +119,17 @@ public class AlquilerController {
             alquiler.setEstado(EstadoAlquiler.ACTIVO);
         }
 
+        // 1) Guardamos el alquiler
         alquilerService.guardar(alquiler);
 
-        // Si es nuevo → después de guardar, redireccionar al formulario de pago
+        // 2) Si es nuevo → marcar bicicleta como ALQUILADA
+        if (esNuevo && alquiler.getBicicleta() != null) {
+            Bicicleta bici = alquiler.getBicicleta();
+            bici.setEstado(EstadoBicicleta.ALQUILADA);  // o "ALQUILADA" si es String
+            bicicletaService.guardar(bici);
+        }
+
+        // 3) Redirecciones
         if (esNuevo) {
             flash.addFlashAttribute("success", "Alquiler guardado correctamente, ahora registre el pago.");
             return "redirect:/alquileres/" + alquiler.getIdAlquiler() + "/pago/nuevo";
@@ -118,6 +138,7 @@ public class AlquilerController {
         flash.addFlashAttribute("success", "Alquiler guardado correctamente");
         return "redirect:/alquileres";
     }
+
 
     @GetMapping("/eliminar/{id}")
     public String eliminarAlquiler(@PathVariable("id") Long id, RedirectAttributes flash) {

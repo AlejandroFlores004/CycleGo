@@ -7,9 +7,12 @@ public interface IBicicletaService {
 
     List<Bicicleta> listarTodas();
 
+    List<Bicicleta> listarDisponibles();
+
     Bicicleta buscarPorId(Long idBicicleta);
 
     Bicicleta guardar(Bicicleta bicicleta);
 
     void eliminar(Long idBicicleta);
+    
 }

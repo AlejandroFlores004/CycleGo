@@ -64,11 +64,6 @@
                             </td>
 
                             <td>
-                                <a class="btn btn-sm btn-outline-primary"
-                                   th:href="@{'/alquileres/editar/' + ${alquiler.idAlquiler}}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-
                                 <!-- Botón de pago: si no tiene, registrar; si ya tiene, editar -->
                                 <a class="btn btn-sm btn-outline-success"
                                    th:if="${alquiler.pagoAlquiler == null}"
