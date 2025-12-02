@@ -13,5 +13,4 @@ public interface IClienteService {
 
     void eliminar(Long idCliente);
 
-    List<Cliente> findClientesActivosSinUsuario();
 }
