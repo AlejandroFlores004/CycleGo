@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Base de datos', 'basedatos', ~{::section})}">
+
+<section class="dashboard">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">Gestión de base de datos</h2>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="row">
+        <!-- Panel de descarga -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Descargar backup</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Genera y descarga un respaldo completo de la base de datos actual
+                        en formato <strong>.backup</strong> (pg_dump - formato custom).
+                    </p>
+
+                    <a class="btn btn-primary"
+                       th:href="@{/basedatos/backup}">
+                        <i class="bi bi-download"></i> Descargar backup
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de restauración -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Restaurar base de datos</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Sube un archivo de respaldo <strong>.backup</strong> generado con pg_dump.
+                        <br>
+                        <strong class="text-danger">Advertencia:</strong> esta acción
+                        puede sobrescribir la información actual.
+                    </p>
+
+                    <form th:action="@{/basedatos/restaurar}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                        <div class="mb-3">
+                            <label for="archivo" class="form-label">Archivo de backup (.backup)</label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="archivo"
+                                   name="archivo"
+                                   accept=".backup,.dump,.sql"
+                                   required>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-upload"></i> Restaurar base de datos
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</html>

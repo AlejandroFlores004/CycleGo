@@ -127,21 +127,14 @@
                             <!-- Mostrar el nombre (solo lectura) -->
                             <input type="text"
                                    class="form-control"
-                                   th:value="${cliente.usuarioRegistro != null
+                                   th:value="${cliente.usuarioRegistro != null and cliente.usuarioRegistro.empleado != null
                                                 ? cliente.usuarioRegistro.empleado.nombres + ' ' + cliente.usuarioRegistro.empleado.apellidos
-                                                : (usuarioSesion != null
-                                                    ? usuarioSesion.empleado.nombres + ' ' + usuarioSesion.empleado.apellidos
-                                                    : '')}"
+                                                : ''}"
                                    readonly />
 
                             <!-- Hidden para enviar el id del usuarioRegistro -->
                             <input type="hidden"
-                                   name="usuarioRegistro.idUsuario"
-                                   th:value="${cliente.usuarioRegistro != null
-                                                ? cliente.usuarioRegistro.idUsuario
-                                                : (usuarioSesion != null
-                                                    ? usuarioSesion.idUsuario
-                                                    : null)}" />
+                                   th:field="*{usuarioRegistro.idUsuario}" />
 
                             <div class="text-danger"
                                  th:if="${#fields.hasErrors('usuarioRegistro.idUsuario')}"

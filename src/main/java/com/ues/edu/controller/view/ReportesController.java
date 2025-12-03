@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.ues.edu.serviceimp.ReportesAlquileresPDFServiceImpl;
+import com.ues.edu.serviceimp.ReportesBicicletasPDFServiceImpl;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -16,6 +17,9 @@ public class ReportesController {
 
     @Autowired
     private ReportesAlquileresPDFServiceImpl reportesAlquileresPDFService;
+
+    @Autowired
+    private ReportesBicicletasPDFServiceImpl reportesBicicletasPDFService;
 
     /** 
      * Página del menú de reportes
@@ -34,4 +38,11 @@ public class ReportesController {
         reportesAlquileresPDFService.generarPDF(response);
     }
 
+    /**
+     * Reporte PDF de BICICLETAS
+     */
+    @GetMapping("/reportes/bicicletas/pdf")
+    public void generarReporteBicicletasPDF(HttpServletResponse response) throws IOException {
+        reportesBicicletasPDFService.generarPDF(response);
+    }
 }

@@ -91,16 +91,51 @@ public class ClienteController {
     }
 
 
+
     @PostMapping("/guardar")
     public String guardar(
             @Valid @ModelAttribute("cliente") Cliente cliente,
             BindingResult result,
-            @RequestParam(value = "modoEdicion", required= false, defaultValue = "false") boolean modoEdicion,
+            @RequestParam(value = "modoEdicion", required = false, defaultValue = "false") boolean modoEdicion,
             RedirectAttributes flash,
             Model model,
             @ModelAttribute("usuarioSesion") com.ues.edu.model.Usuario usuarioSesion) {
 
-        if(result.hasErrors()) {
+        // Aseguramos usuarioRegistro
+        if (cliente.getUsuarioRegistro() == null && usuarioSesion != null) {
+            cliente.setUsuarioRegistro(usuarioSesion);
+        }
+
+        // En creación, aseguramos fechaRegistro y estado
+        if (!modoEdicion) {
+            if (cliente.getFechaRegistro() == null) {
+                cliente.setFechaRegistro(new Date());
+            }
+            if (cliente.getEstado() == null) {
+                cliente.setEstado(true);
+            }
+        }
+
+        // 🔹 VALIDACIÓN DE EMAIL ÚNICO
+        // Buscamos si ya existe un cliente con ese email
+        Cliente existente = clienteService.buscarPorEmail(cliente.getEmail());
+
+        if (existente != null) {
+            // Si estamos creando (id nulo) → siempre es duplicado
+            // Si estamos editando → es duplicado solo si el encontrado NO es el mismo cliente
+            if (cliente.getIdCliente() == null ||
+                !existente.getIdCliente().equals(cliente.getIdCliente())) {
+                
+                result.rejectValue(
+                        "email",
+                        "error.cliente",
+                        "Ya existe un cliente registrado con este correo electrónico"
+                );
+            }
+        }
+
+        // Si hay errores (de Bean Validation o de email único), volvemos al form
+        if (result.hasErrors()) {
             model.addAttribute("titulo", modoEdicion ? "Editar Cliente" : "Nuevo Cliente");
             model.addAttribute("urlForm", "/clientes/guardar");
             model.addAttribute("modoEdicion", modoEdicion);
@@ -108,11 +143,7 @@ public class ClienteController {
             return "clientes/form";
         }
 
-        // Si hay usuario en sesión, se asegura que quede como usuarioRegistro
-        if (usuarioSesion != null) {
-            cliente.setUsuarioRegistro(usuarioSesion);
-        }
-
+        // Guardar
         clienteService.guardar(cliente);
         flash.addFlashAttribute("success", "Cliente guardado correctamente");
         return "redirect:/clientes";

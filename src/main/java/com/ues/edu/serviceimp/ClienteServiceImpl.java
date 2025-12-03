@@ -1,6 +1,7 @@
 package com.ues.edu.serviceimp;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,4 +41,14 @@ public class ClienteServiceImpl implements IClienteService {
         clienteRepository.deleteById(idCliente);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Cliente buscarPorEmail(String email) {
+        return clienteRepository.findByEmail(email).orElse(null);
+    }
+
+     @Override
+    public Optional<Cliente> buscarPorDui(String dui) {
+        return clienteRepository.findByDui(dui);
+    }
 }

@@ -70,11 +70,19 @@
                     </ul>
                 </li>
 
-                <!-- Grupo: Reportes -->
+                <!-- Reportes -->
                 <li class="nav-item"
                     th:classappend="${activePage == 'reportes'} ? ' active-nav'">
                     <a class="nav-link" th:href="@{/reportes}">
                         Reporte
+                    </a>
+                </li>
+
+                <!-- Reportes -->
+                <li class="nav-item"
+                    th:classappend="${activePage == 'basedatos'} ? ' active-nav'">
+                    <a class="nav-link" th:href="@{/basedatos}">
+                        Base de datos
                     </a>
                 </li>
 
