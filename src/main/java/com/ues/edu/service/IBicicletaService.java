@@ -1,17 +1,14 @@
 package com.ues.edu.service;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 import com.ues.edu.model.Bicicleta;
 
 public interface IBicicletaService {
 
-    Page<Bicicleta> listar(Pageable pageable);
+    List<Bicicleta> listar();
 
-    Optional<Bicicleta> buscarPorId(Integer id);
+    Bicicleta buscarPorId(Integer id);
 
     void guardar(Bicicleta bicicleta);
 

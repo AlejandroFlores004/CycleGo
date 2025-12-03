@@ -101,13 +101,13 @@
                                     <i class="bi bi-pencil"></i>
                                 </a>
 
-                                <!-- ELIMINAR (100% funcional) -->
-                                <button type="button"
+                                <!-- ELIMINAR  -->
+                             <!--   <button type="button"
                                         class="btn btn-sm btn-outline-danger"
                                         th:data-id="${b.idBicicleta}"
                                         onclick="confirmarEliminar(this)">
                                     <i class="bi bi-trash"></i>
-                                </button>
+                                </button> --> 
 
                             </div>
                         </td>
@@ -124,38 +124,6 @@
             </div>
 
         </div>
-
-        <!-- PAGINADOR -->
-        <div class="card-footer bg-white">
-            <nav th:if="${totalPages > 1}">
-                <ul class="pagination justify-content-center mb-0">
-
-                    <li class="page-item" th:classappend="${pagina.first} ? ' disabled'">
-                        <a class="page-link"
-                           th:href="@{/bicicletas(page=${currentPage - 1})}">
-                            Anterior
-                        </a>
-                    </li>
-
-                    <li class="page-item"
-                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                        th:classappend="${i} == ${currentPage} ? ' active'">
-                        <a class="page-link"
-                           th:text="${i + 1}"
-                           th:href="@{/bicicletas(page=${i})}">1</a>
-                    </li>
-
-                    <li class="page-item" th:classappend="${pagina.last} ? ' disabled'">
-                        <a class="page-link"
-                           th:href="@{/bicicletas(page=${currentPage + 1})}">
-                            Siguiente
-                        </a>
-                    </li>
-
-                </ul>
-            </nav>
-        </div>
-    </div>
 
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

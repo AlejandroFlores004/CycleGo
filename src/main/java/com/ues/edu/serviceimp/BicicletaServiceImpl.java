@@ -1,10 +1,9 @@
-package com.ues.edu.serviceimp;   // usa el paquete correcto
+package com.ues.edu.serviceimp;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ues.edu.model.Bicicleta;
@@ -18,13 +17,14 @@ public class BicicletaServiceImpl implements IBicicletaService {
     private BicicletaRepository bicicletaRepository;
 
     @Override
-    public Page<Bicicleta> listar(Pageable pageable) {
-        return bicicletaRepository.findAll(pageable);
+    public List<Bicicleta> listar() {
+        // todas sin paginar, ordenadas por fecha desc
+        return bicicletaRepository.findAll(Sort.by("fechaCreacion").descending());
     }
 
     @Override
-    public Optional<Bicicleta> buscarPorId(Integer id) {
-        return bicicletaRepository.findById(id);
+    public Bicicleta buscarPorId(Integer id) {
+        return bicicletaRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -36,5 +36,4 @@ public class BicicletaServiceImpl implements IBicicletaService {
     public void eliminar(Integer id) {
         bicicletaRepository.deleteById(id);
     }
-    
 }

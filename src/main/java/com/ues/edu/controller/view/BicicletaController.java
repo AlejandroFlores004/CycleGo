@@ -1,14 +1,10 @@
 package com.ues.edu.controller.view;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ues.edu.model.Bicicleta;
@@ -36,20 +31,15 @@ public class BicicletaController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // LISTAR
+    // LISTA SIN PAGINADOR
     @GetMapping
-    public String listar(@RequestParam(name = "page", defaultValue = "0") int page,
-                         Model model) {
+    public String listar(Model model) {
 
-        Pageable pageable = PageRequest.of(page, 5, Sort.by("fechaCreacion").descending());
-        Page<Bicicleta> pagina = bicicletaService.listar(pageable);
+        List<Bicicleta> lista = bicicletaService.listar();
 
-        model.addAttribute("titulo", "Gestión de Bicicletas");
-        model.addAttribute("pagina", pagina);
-        model.addAttribute("listaBicicletas", pagina.getContent());
-        model.addAttribute("totalPages", pagina.getTotalPages());
-        model.addAttribute("totalElements", pagina.getTotalElements());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("titulo", "Listado de bicicletas");
+        model.addAttribute("listaBicicletas", lista);
+        model.addAttribute("totalElements", lista.size());
 
         return "bicicletas/lista";
     }
@@ -65,25 +55,24 @@ public class BicicletaController {
         model.addAttribute("estados",
                 Arrays.asList("DISPONIBLE", "ALQUILADA", "MANTENIMIENTO"));
         model.addAttribute("usuarioRegistroNombre",
-                auth != null ? auth.getName() : ""
-        );
+                auth != null ? auth.getName() : "");
 
         return "bicicletas/form";
     }
 
     // EDITAR
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model,
-                         RedirectAttributes flash, Authentication auth) {
+    public String editar(@PathVariable Integer id,
+                         Model model,
+                         RedirectAttributes flash,
+                         Authentication auth) {
 
-        Optional<Bicicleta> opt = bicicletaService.buscarPorId(id);
+        Bicicleta bicicleta = bicicletaService.buscarPorId(id);
 
-        if (opt.isEmpty()) {
+        if (bicicleta == null) {
             flash.addFlashAttribute("error", "La bicicleta no existe");
             return "redirect:/bicicletas";
         }
-
-        Bicicleta bicicleta = opt.get();
 
         String usuarioRegistroNombre =
                 bicicleta.getUsuarioRegistro() != null
@@ -99,6 +88,7 @@ public class BicicletaController {
         return "bicicletas/form";
     }
 
+    // GUARDAR (CREAR / EDITAR)
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute("bicicleta") Bicicleta bicicleta,
                           BindingResult result,
@@ -106,45 +96,57 @@ public class BicicletaController {
                           RedirectAttributes flash,
                           Authentication authentication) {
 
+        // Validaciones de Bean Validation
         if (result.hasErrors()) {
+            model.addAttribute("titulo",
+                    bicicleta.getIdBicicleta() == null ? "Nueva Bicicleta" : "Editar Bicicleta");
+            model.addAttribute("estados",
+                    Arrays.asList("DISPONIBLE", "ALQUILADA", "MANTENIMIENTO"));
+            model.addAttribute("usuarioRegistroNombre",
+                    authentication != null ? authentication.getName() : "");
+            return "bicicletas/form";
+        }
+
+        // NUEVA
+        if (bicicleta.getIdBicicleta() == null) {
+
+            if (authentication != null) {
+                usuarioRepository.findByUsername(authentication.getName())
+                        .ifPresent(bicicleta::setUsuarioRegistro);
+            }
+            // fechaCreacion y estado se setean en @PrePersist
+
+        } else {
+            // EDICIÓN: conservar fechaCreacion y usuarioRegistro
+            Bicicleta original = bicicletaService.buscarPorId(bicicleta.getIdBicicleta());
+            if (original == null) {
+                flash.addFlashAttribute("error", "La bicicleta no existe");
+                return "redirect:/bicicletas";
+            }
+            bicicleta.setFechaCreacion(original.getFechaCreacion());
+            bicicleta.setUsuarioRegistro(original.getUsuarioRegistro());
+        }
+
+        try {
+            bicicletaService.guardar(bicicleta);
+        } catch (DataIntegrityViolationException e) {
+            // Código duplicado u otra violación de integridad
+            result.rejectValue("codigo", "codigo.duplicado",
+                    "Ya existe una bicicleta con ese código");
 
             model.addAttribute("titulo",
                     bicicleta.getIdBicicleta() == null ? "Nueva Bicicleta" : "Editar Bicicleta");
-
             model.addAttribute("estados",
                     Arrays.asList("DISPONIBLE", "ALQUILADA", "MANTENIMIENTO"));
-
             model.addAttribute("usuarioRegistroNombre",
                     authentication != null ? authentication.getName() : "");
 
             return "bicicletas/form";
         }
 
-        // SI ES NUEVA → NO TOCAR NADA
-        if (bicicleta.getIdBicicleta() == null) {
-
-            // SOLO asignar usuario si hay auth
-            if (authentication != null) {
-                usuarioRepository.findByUsername(authentication.getName())
-                        .ifPresent(bicicleta::setUsuarioRegistro);
-            }
-
-            // fechaCreacion y estado lo hace @PrePersist
-        }
-
-        // SI ES EDICIÓN → conservar campos protegidos
-        else {
-            Bicicleta original = bicicletaService.buscarPorId(bicicleta.getIdBicicleta()).get();
-            bicicleta.setFechaCreacion(original.getFechaCreacion());
-            bicicleta.setUsuarioRegistro(original.getUsuarioRegistro());
-        }
-
-        bicicletaService.guardar(bicicleta);
         flash.addFlashAttribute("success", "Bicicleta guardada correctamente");
-
         return "redirect:/bicicletas";
     }
-
 
     // ELIMINAR
     @GetMapping("/eliminar/{id}")

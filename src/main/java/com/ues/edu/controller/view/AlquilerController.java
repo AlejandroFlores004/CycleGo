@@ -107,7 +107,7 @@ public class AlquilerController {
 
     private void cargarListas(Model model) {
         model.addAttribute("clientes", clienteService.listarTodos());
-        model.addAttribute("bicicletas", bicicletaService.listarTodas());
+        model.addAttribute("bicicletas", bicicletaService.listar());
         model.addAttribute("usuarios", usuarioService.listarTodos());
         model.addAttribute("estados", EstadoAlquiler.values());
     }
