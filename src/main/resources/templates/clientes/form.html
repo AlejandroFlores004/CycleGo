@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Cliente', 'clientes', ~{::section})}">
+
+<section class="cliente-form">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0" th:text="${titulo}">Cliente</h2>
+                </div>
+
+                <div class="card-body">
+                    <form th:action="@{${urlForm}}"
+                          th:object="${cliente}"
+                          method="post">
+
+                        <!-- CSRF -->
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}" />
+
+                        <!-- Modo edición -->
+                        <input type="hidden"
+                               name="modoEdicion"
+                               th:value="${modoEdicion}" />
+
+                        <!-- ID (solo en edición) -->
+                        <input type="hidden"
+                               th:if="*{idCliente} != null"
+                               th:field="*{idCliente}" />
+
+                        <!-- NOMBRES -->
+                        <div class="mb-3">
+                            <label for="nombres" class="form-label">Nombres</label>
+                            <input type="text"
+                                   id="nombres"
+                                   class="form-control"
+                                   th:field="*{nombres}"
+                                   required
+                                   maxlength="100" />
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombres')}"
+                                 th:errors="*{nombres}">
+                            </div>
+                        </div>
+
+                        <!-- APELLIDOS -->
+                        <div class="mb-3">
+                            <label for="apellidos" class="form-label">Apellidos</label>
+                            <input type="text"
+                                   id="apellidos"
+                                   class="form-control"
+                                   th:field="*{apellidos}"
+                                   required
+                                   maxlength="100" />
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('apellidos')}"
+                                 th:errors="*{apellidos}">
+                            </div>
+                        </div>
+
+                        <!-- DUI -->
+                        <div class="mb-3">
+                            <label for="dui" class="form-label">DUI (12345678-9)</label>
+                            <input type="text"
+                                   id="dui"
+                                   class="form-control"
+                                   th:field="*{dui}"
+                                   required
+                                   maxlength="10" />
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('dui')}"
+                                 th:errors="*{dui}">
+                            </div>
+                        </div>
+
+                        <!-- TELÉFONO -->
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono (1234-5678)</label>
+                            <input type="text"
+                                   id="telefono"
+                                   class="form-control"
+                                   th:field="*{telefono}"
+                                   required
+                                   maxlength="9" />
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('telefono')}"
+                                 th:errors="*{telefono}">
+                            </div>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email"
+                                   id="email"
+                                   class="form-control"
+                                   th:field="*{email}"
+                                   required
+                                   maxlength="100" />
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('email')}"
+                                 th:errors="*{email}">
+                            </div>
+                        </div>
+
+                        <!-- FECHA REGISTRO (solo lectura) -->
+                        <div class="mb-3">
+                            <label for="fechaRegistro" class="form-label">Fecha de registro</label>
+                            <input type="date"
+                                   id="fechaRegistro"
+                                   class="form-control"
+                                   th:field="*{fechaRegistro}"
+                                   readonly />
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('fechaRegistro')}"
+                                 th:errors="*{fechaRegistro}">
+                            </div>
+                        </div>
+
+                        <!-- USUARIO REGISTRO: mostrar nombre + hidden con id -->
+                        <div class="mb-3">
+                            <label class="form-label">Usuario que registra</label>
+
+                            <!-- Mostrar el nombre (solo lectura) -->
+                            <input type="text"
+                                   class="form-control"
+                                   th:value="${cliente.usuarioRegistro != null
+                                                ? cliente.usuarioRegistro.empleado.nombres + ' ' + cliente.usuarioRegistro.empleado.apellidos
+                                                : (usuarioSesion != null
+                                                    ? usuarioSesion.empleado.nombres + ' ' + usuarioSesion.empleado.apellidos
+                                                    : '')}"
+                                   readonly />
+
+                            <!-- Hidden para enviar el id del usuarioRegistro -->
+                            <input type="hidden"
+                                   name="usuarioRegistro.idUsuario"
+                                   th:value="${cliente.usuarioRegistro != null
+                                                ? cliente.usuarioRegistro.idUsuario
+                                                : (usuarioSesion != null
+                                                    ? usuarioSesion.idUsuario
+                                                    : null)}" />
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('usuarioRegistro.idUsuario')}"
+                                 th:errors="*{usuarioRegistro.idUsuario}">
+                            </div>
+                        </div>
+
+                        <!-- ESTADO -->
+                        <!-- En edición: mostrar checkbox -->
+                        <div class="mb-3" th:if="${modoEdicion}">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="estado"
+                                       class="form-check-input"
+                                       th:field="*{estado}" />
+                                <label for="estado" class="form-check-label">Estado</label>
+                            </div>
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('estado')}"
+                                 th:errors="*{estado}">
+                            </div>
+                        </div>
+
+                        <!-- En creación: mandar true oculto -->
+                        <input type="hidden"
+                               th:if="${!modoEdicion}"
+                               name="estado"
+                               value="true" />
+
+                        <!-- BOTONES -->
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/clientes}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save2"></i> Guardar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>

@@ -39,4 +39,5 @@ public class ClienteServiceImpl implements IClienteService {
     public void eliminar(Long idCliente) {
         clienteRepository.deleteById(idCliente);
     }
+
 }
