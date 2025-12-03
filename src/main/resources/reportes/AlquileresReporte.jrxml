@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AlquileresReporte" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92c1b4f5-79ba-43e5-afd7-c4eb7bfc3106">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapterConexionPostgresql"/>
+	<parameter name="createdBy" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<field name="idAlquiler" class="java.lang.Long"/>
+	<field name="nombreCliente" class="java.lang.String"/>
+	<field name="codigoBicicleta" class="java.lang.String"/>
+	<field name="fechaAlquiler" class="java.util.Date"/>
+	<field name="fechaDevolucionEstimada" class="java.util.Date"/>
+	<field name="fechaDevolucionReal" class="java.util.Date"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="montoTotal" class="java.math.BigDecimal"/>
+	<field name="metodoPago" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="120" y="5" width="315" height="25" uuid="1214a2de-8889-436b-8a7e-47b2b749598e"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE ALQUILERES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="30" width="315" height="15" uuid="c1c1b4f5-79ba-43e5-afd7-c4eb7bfc3111"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Generado por: " + $P{createdBy}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="5" width="300" height="15" uuid="a3c6fb4e-2a39-4f15-9f49-4e4f5d5f1a11"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sistema de Alquileres CycleGo]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="355" y="5" width="200" height="15" uuid="b5d81f3c-7c52-4f2a-bbf9-9e63fa9f2b22"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="0" y="15" width="555" height="20" backcolor="#F0F0F0" uuid="c7a0f3c9-21d6-4b11-9f6e-8a87b0a3c333"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="15" width="35" height="20" uuid="3a7565a5-03e2-463d-9237-880e20bdc161"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="15" width="130" height="20" uuid="5fd566ed-958c-4284-a794-60661ffe2cd9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="165" y="15" width="45" height="20" uuid="2babe03d-292d-415a-9811-e25eee50b387"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BICI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="15" width="65" height="20" uuid="2652ddca-699a-4d16-9075-8a19b60480d9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F. ALQUILER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="15" width="65" height="20" uuid="2404621c-5107-4150-a7ca-47dd6661df0c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F. ESTIMADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="15" width="65" height="20" uuid="12890b97-6e0c-46bd-b971-813ccbd4324b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F. REAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="405" y="15" width="55" height="20" uuid="563fb4b2-17ef-4842-b097-3ba19bfc6cce"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="15" width="45" height="20" uuid="1fda2179-e20d-4341-b9c9-21b8e525658a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="505" y="15" width="50" height="20" uuid="884c3209-416f-4567-acbf-350cfc722060"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MÉTODO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="2" width="35" height="18" uuid="96df30b1-b473-46ce-83c5-81ef216240a4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{idAlquiler}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="35" y="2" width="130" height="18" uuid="1dffc066-97f9-4d25-8050-fbccaa9d195b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="165" y="2" width="45" height="18" uuid="83ca58c4-bf0a-4733-b94e-06eff575ff47"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigoBicicleta}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement x="210" y="2" width="65" height="18" uuid="480a198a-b3f7-4a3e-8c0c-17578c85a866"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaAlquiler}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement x="275" y="2" width="65" height="18" uuid="7fe70e6f-6648-4965-8314-bdd367efc08f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaDevolucionEstimada}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement x="340" y="2" width="65" height="18" uuid="002f6273-151c-4a06-bff1-66a518b19d67"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaDevolucionReal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="405" y="2" width="55" height="18" uuid="85876de1-fa48-4836-b3e4-4991afe8d6c5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="460" y="2" width="45" height="18" uuid="22c6c6e6-b0a5-4e37-9fb3-9a09fc2b2eb1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{montoTotal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="505" y="2" width="50" height="18" uuid="b78e03d7-f0b8-4f93-9bfe-59845177b98a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{metodoPago}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="340" y="5" width="120" height="20" uuid="3091840d-2771-44c7-b344-201020e38de2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="460" y="5" width="80" height="20" uuid="4b7b9bda-b228-4cd1-884c-073019352346"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

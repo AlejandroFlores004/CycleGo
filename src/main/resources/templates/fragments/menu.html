@@ -71,20 +71,13 @@
                 </li>
 
                 <!-- Grupo: Reportes -->
-                <li class="nav-item dropdown"
+                <li class="nav-item"
                     th:classappend="${activePage == 'reportes'} ? ' active-nav'">
-                    <a class="nav-link dropdown-toggle" href="#"
-                       id="reportesDropdown"
-                       role="button" data-bs-toggle="dropdown">
-                        Reportes
+                    <a class="nav-link" th:href="@{/reportes}">
+                        Reporte
                     </a>
-
-                    <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" th:href="@{/reportes/alquileres}">Alquileres</a></li>
-                        <li><a class="dropdown-item" th:href="@{/reportes/bicicletas}">Bicicletas</a></li>
-                        <li><a class="dropdown-item" th:href="@{/reportes/clientes}">Clientes</a></li>
-                    </ul>
                 </li>
+
 
             </ul>
 
