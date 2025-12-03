@@ -1,42 +1,40 @@
-package com.ues.edu.serviceimp;
+package com.ues.edu.serviceimp;   // usa el paquete correcto
 
-import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ues.edu.model.Bicicleta;
 import com.ues.edu.repository.BicicletaRepository;
 import com.ues.edu.service.IBicicletaService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-@Transactional
 public class BicicletaServiceImpl implements IBicicletaService {
 
-    private final BicicletaRepository bicicletaRepository;
+    @Autowired
+    private BicicletaRepository bicicletaRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Bicicleta> listarTodas() {
-        return bicicletaRepository.findAll();
+    public Page<Bicicleta> listar(Pageable pageable) {
+        return bicicletaRepository.findAll(pageable);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Bicicleta buscarPorId(Long idBicicleta) {
-        return bicicletaRepository.findById(idBicicleta).orElse(null);
+    public Optional<Bicicleta> buscarPorId(Integer id) {
+        return bicicletaRepository.findById(id);
     }
 
     @Override
-    public Bicicleta guardar(Bicicleta bicicleta) {
-        return bicicletaRepository.save(bicicleta);
+    public void guardar(Bicicleta bicicleta) {
+        bicicletaRepository.save(bicicleta);
     }
 
     @Override
-    public void eliminar(Long idBicicleta) {
-        bicicletaRepository.deleteById(idBicicleta);
+    public void eliminar(Integer id) {
+        bicicletaRepository.deleteById(id);
     }
+    
 }

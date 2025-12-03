@@ -9,4 +9,6 @@ public interface IUsuarioService {
     List<Usuario> listarTodos();
     Usuario buscarPorId(Long id);
     void eliminar(Long id);
+
+    
 }
