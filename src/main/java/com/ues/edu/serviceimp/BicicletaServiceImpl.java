@@ -23,12 +23,6 @@ public class BicicletaServiceImpl implements IBicicletaService {
         return bicicletaRepository.findAll(Sort.by("fechaCreacion").descending());
     }
 
-    @Override
-    public List<Bicicleta> listarDisponibles() {
-        return bicicletaRepository.findByEstado(EstadoBicicleta.DISPONIBLE);
-        // o, si es String:
-        // return bicicletaRepository.findByEstado("DISPONIBLE");
-    }
 
     @Override
     public List<Bicicleta> listarDisponibles() {
