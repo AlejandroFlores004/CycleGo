@@ -83,32 +83,39 @@
                                 th:errors="*{email}"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="fregistro" class="form-label">Fecha de registro</label>
+                            <label for="fechaRegistro" class="form-label">Fecha de registro</label>
                             <input
                                 type="date"
-                                id="fregistro"
+                                id="fechaRegistro"
                                 class="form-control"
-                                th:field="*{fregistro}"
+                                th:field="*{fechaRegistro}"
                                 required>
-                            <div class="text-danger" th:if="${#fields.hasErrors('fregistro')}"
-                                th:errors="*{fregistro}"></div>
+                            <div class="text-danger" th:if="${#fields.hasErrors('fechaRegistro')}"
+                                th:errors="*{fechaRegistro}"></div>
                         </div>
-                        <div class="mb-3">
-                            <label for="idUsuario" class="form-label">Usuario</label>
-                            <select
-                                id="idUsuario"
-                                class="form-control"
-                                th:field="*{idUsuario}"
-                                required>
-                                <option value="">Seleccionar usuario</option>
-                                <option th:each="usuario : ${usuarios}" 
-                                        th:value="${usuario.idUsuario}" 
-                                        th:text="${usuario.nombres}">
-                                </option>
-                            </select>
-                            <div class="text-danger" th:if="${#fields.hasErrors('idUsuario')}"
-                                th:errors="*{idUsuario}"></div>
-                        </div>
+                       <div class="mb-3">
+						    <label for="usuarioRegistro" class="form-label">Usuario</label>
+						    <select
+						        id="usuarioRegistro"
+						        class="form-control"
+						        th:field="*{usuarioRegistro.idUsuario}"
+						        required>
+						        <option value="">Seleccionar usuario</option>
+						
+						        <option th:each="usuario : ${usuarios}"
+								        th:value="${usuario.idUsuario}"
+								        th:text="${usuario.empleado.nombres + ' ' + usuario.empleado.apellidos}">
+								</option>
+
+						    </select>
+						
+						    <div class="text-danger"
+						         th:if="${#fields.hasErrors('usuarioRegistro.idUsuario')}"
+						         th:errors="*{usuarioRegistro.idUsuario}">
+						    </div>
+						</div>
+
+
                         <div class="mb-3">
                             <div class="form-check">
                                 <input

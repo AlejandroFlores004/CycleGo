@@ -2,6 +2,8 @@ package com.ues.edu.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,11 +35,12 @@ public class Cliente extends Persona {
     @Column(name = "id_cliente")
     private Long idCliente;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     @Column(name = "fecha_registro", nullable = false)
     @PastOrPresent(message = "La fecha de registro no puede ser futura")
     private Date fechaRegistro;
-
+    
     @NotNull(message = "El usuario de registro es obligatorio")
     @ManyToOne
     @JoinColumn(name = "id_usuario_registro", nullable = false)
@@ -45,6 +48,7 @@ public class Cliente extends Persona {
 
     @PrePersist
     public void prePersist() {
+    	 super.prePersist();
         if (this.fechaRegistro == null) {
             this.fechaRegistro = new Date();
         }

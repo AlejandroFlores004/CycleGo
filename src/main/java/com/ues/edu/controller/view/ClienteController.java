@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ues.edu.model.Cliente;
 import com.ues.edu.service.IClienteService;
+import com.ues.edu.service.IUsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -18,10 +19,14 @@ import jakarta.validation.Valid;
 public class ClienteController {
 
     private final IClienteService clienteService;
+    private final IUsuarioService usuarioService;
 
-    public ClienteController(IClienteService clienteService) {
+    public ClienteController(IClienteService clienteService,
+                             IUsuarioService usuarioService) {
         this.clienteService = clienteService;
+        this.usuarioService = usuarioService;
     }
+
 
     @GetMapping
     public String listar(Model model) {
@@ -32,6 +37,8 @@ public class ClienteController {
         model.addAttribute("activePage", "clientes");
         return "clientes/lista";
     }
+    
+    
 
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
@@ -42,6 +49,8 @@ public class ClienteController {
         model.addAttribute("urlForm", "/clientes/guardar");
         model.addAttribute("modoEdicion", false);
         model.addAttribute("activePage", "clientes");
+        model.addAttribute("usuarios", usuarioService.listarTodos());
+
 
         return "clientes/form";
     }
@@ -61,6 +70,8 @@ public class ClienteController {
         model.addAttribute("urlForm", "/clientes/guardar");
         model.addAttribute("modoEdicion", true);
         model.addAttribute("activePage", "clientes");
+        model.addAttribute("usuarios", usuarioService.listarTodos());
+
 
         return "clientes/form";
     }
@@ -78,6 +89,8 @@ public class ClienteController {
             model.addAttribute("urlForm", "/clientes/guardar");
             model.addAttribute("modoEdicion", modoEdicion);
             model.addAttribute("activePage", "clientes");
+            model.addAttribute("usuarios", usuarioService.listarTodos());
+
             return "clientes/form";
         }
 
