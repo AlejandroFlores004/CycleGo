@@ -41,7 +41,6 @@ public class Cliente extends Persona {
     @PastOrPresent(message = "La fecha de registro no puede ser futura")
     private Date fechaRegistro;
     
-    @NotNull(message = "El usuario de registro es obligatorio")
     @ManyToOne
     @JoinColumn(name = "id_usuario_registro", nullable = false)
     private Usuario usuarioRegistro;
