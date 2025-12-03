@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Bicicletas', 'bicicletas', ~{::section})}">
+
+<section class="bicicletas-lista">
+
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <div>
+            <h1 class="h3 mb-0 fw-bold text-primary">Gestión de Bicicletas</h1>
+            <p class="text-muted mb-0">
+                Administra el catálogo de bicicletas disponibles para alquiler.
+            </p>
+        </div>
+
+        <div class="text-end">
+            <a class="btn btn-primary d-flex align-items-center gap-2"
+               th:href="@{/bicicletas/nueva}">
+                <i class="bi bi-plus-circle"></i>
+                <span>Nueva bicicleta</span>
+            </a>
+            <div class="mt-2">
+                <span class="badge rounded-pill bg-light text-dark border">
+                    <i class="bi bi-bicycle me-1"></i>
+                    <span th:text="${totalElements}">0</span>
+                    <span> bicicletas registradas</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas -->
+    <div class="mt-3">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-1"></i>
+            <span th:text="${success}">Operación exitosa</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            <span th:text="${error}">Ha ocurrido un error</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Código</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Estado</th>
+                        <th>Registrada por</th>
+                        <th>Fecha creación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="b : ${listaBicicletas}">
+                        <td th:text="${b.codigo}">001</td>
+                        <td th:text="${b.marca}">Trek</td>
+                        <td th:text="${b.modelo}">X-Caliber</td>
+
+                        <td>
+                            <span th:switch="${b.estado}">
+                                <span th:case="'DISPONIBLE'"
+                                      class="badge rounded-pill bg-success-subtle text-success fw-semibold px-3">
+                                    DISPONIBLE
+                                </span>
+                                <span th:case="'ALQUILADA'"
+                                      class="badge rounded-pill bg-warning text-dark fw-semibold px-3">
+                                    ALQUILADA
+                                </span>
+                                <span th:case="'MANTENIMIENTO'"
+                                      class="badge rounded-pill bg-secondary-subtle text-secondary fw-semibold px-3">
+                                    MANTENIMIENTO
+                                </span>
+                                <span th:case="*"
+                                      class="badge rounded-pill bg-light text-muted px-3"
+                                      th:text="${b.estado}">OTRO</span>
+                            </span>
+                        </td>
+
+                        <td th:text="${b.usuarioRegistro != null ? b.usuarioRegistro.username : 'N/D'}"></td>
+
+                        <td th:text="${#dates.format(b.fechaCreacion, 'dd/MM/yyyy HH:mm')}">
+                            01/01/2025 12:00
+                        </td>
+
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+
+                                <!-- EDITAR -->
+                                <a th:href="@{'/bicicletas/editar/' + ${b.idBicicleta}}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <!-- ELIMINAR  -->
+                             <!--   <button type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        th:data-id="${b.idBicicleta}"
+                                        onclick="confirmarEliminar(this)">
+                                    <i class="bi bi-trash"></i>
+                                </button> --> 
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(listaBicicletas)}">
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No hay bicicletas registradas.
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script th:inline="javascript">
+        function confirmarEliminar(btn) {
+            const id = btn.getAttribute('data-id');
+
+            // Fix final: si no viene ID, no llama al backend
+            if (!id) {
+                Swal.fire("Error", "ID de bicicleta no encontrado.", "error");
+                return;
+            }
+
+            const url = "/bicicletas/eliminar/" + id;
+
+            Swal.fire({
+                title: "¿Eliminar bicicleta?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((r) => {
+                if (r.isConfirmed) window.location.href = url;
+            });
+        }
+    </script>
+
+</section>
+
+</html>

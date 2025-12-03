@@ -1,18 +1,19 @@
 package com.ues.edu.service;
 
 import java.util.List;
+
 import com.ues.edu.model.Bicicleta;
 
 public interface IBicicletaService {
 
-    List<Bicicleta> listarTodas();
+    List<Bicicleta> listar();
 
     List<Bicicleta> listarDisponibles();
 
-    Bicicleta buscarPorId(Long idBicicleta);
+    Bicicleta buscarPorId(Integer id);
 
-    Bicicleta guardar(Bicicleta bicicleta);
+    void guardar(Bicicleta bicicleta);
 
-    void eliminar(Long idBicicleta);
+    void eliminar(Integer id);
     
 }

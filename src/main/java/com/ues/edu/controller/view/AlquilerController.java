@@ -290,7 +290,7 @@ public class AlquilerController {
 
     private void cargarListas(Model model) {
         model.addAttribute("clientes", clienteService.listarTodos());
-        model.addAttribute("bicicletas", bicicletaService.listarTodas());
+        model.addAttribute("bicicletas", bicicletaService.listar());
     }
 
     @GetMapping("/finalizar/{id}")

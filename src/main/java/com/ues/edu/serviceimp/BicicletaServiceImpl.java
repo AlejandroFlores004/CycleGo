@@ -2,27 +2,25 @@ package com.ues.edu.serviceimp;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ues.edu.model.Bicicleta;
 import com.ues.edu.model.EstadoBicicleta;
 import com.ues.edu.repository.BicicletaRepository;
 import com.ues.edu.service.IBicicletaService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
-@Transactional
 public class BicicletaServiceImpl implements IBicicletaService {
 
-    private final BicicletaRepository bicicletaRepository;
+    @Autowired
+    private BicicletaRepository bicicletaRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Bicicleta> listarTodas() {
-        return bicicletaRepository.findAll();
+    public List<Bicicleta> listar() {
+        // todas sin paginar, ordenadas por fecha desc
+        return bicicletaRepository.findAll(Sort.by("fechaCreacion").descending());
     }
 
     @Override
@@ -33,18 +31,24 @@ public class BicicletaServiceImpl implements IBicicletaService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Bicicleta buscarPorId(Long idBicicleta) {
-        return bicicletaRepository.findById(idBicicleta).orElse(null);
+    public List<Bicicleta> listarDisponibles() {
+        return bicicletaRepository.findByEstado(EstadoBicicleta.DISPONIBLE);
+        // o, si es String:
+        // return bicicletaRepository.findByEstado("DISPONIBLE");
     }
 
     @Override
-    public Bicicleta guardar(Bicicleta bicicleta) {
-        return bicicletaRepository.save(bicicleta);
+    public Bicicleta buscarPorId(Integer id) {
+        return bicicletaRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void eliminar(Long idBicicleta) {
-        bicicletaRepository.deleteById(idBicicleta);
+    public void guardar(Bicicleta bicicleta) {
+        bicicletaRepository.save(bicicleta);
+    }
+
+    @Override
+    public void eliminar(Integer id) {
+        bicicletaRepository.deleteById(id);
     }
 }
