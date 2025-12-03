@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Mantenimiento', 'mantenimientos', ~{::section})}">
+
+<section class="dashboard">
+
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold text-primary" th:text="${mantenimiento.idMantenimiento == null} ? 'Nuevo mantenimiento' : 'Editar mantenimiento'">Formulario</h2>
+        <a th:href="@{/mantenimientos}" class="btn btn-outline-secondary">Volver</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/mantenimientos/guardar}" th:object="${mantenimiento}" method="post" novalidate>
+                <input type="hidden" th:field="*{idMantenimiento}" />
+
+                <div class="mb-3">
+                    <label class="form-label">Descripción <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{descripcion}" />
+                    <div class="form-text text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <textarea class="form-control" rows="2" th:field="*{observaciones}"></textarea>
+                    <div class="form-text text-danger" th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Bicicleta <span class="text-danger">*</span></label>
+                        <select class="form-select" id="bicicleta" th:field="*{bicicleta}">
+                                <option value="">
+                                    --- Seleccione una bicicleta ---
+                                </option>
+
+                                <option th:each="b : ${bicicletas}"
+                                        th:value="${b.idBicicleta}"
+                                        th:text="${b.codigo + ' - ' + b.modelo}">
+                                </option>
+                            </select>
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('bicicleta')}" th:errors="*{bicicleta}"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Empleado <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{empleado}">
+                            <option value="" th:if="${empleados == null}" disabled>-- no hay empleados --</option>
+                            <option th:each="e : ${empleados}" th:value="${e.idEmpleado}" th:text="${e.nombres != null ? e.nombres : e.nombre}"></option>
+                        </select>
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('empleado')}" th:errors="*{empleado}"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Fecha mantenimiento <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control" th:field="*{fechaMantenimiento}" />
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('fechaMantenimiento')}" th:errors="*{fechaMantenimiento}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Costo</label>
+                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{costo}" />
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('costo')}" th:errors="*{costo}"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <a th:href="@{/mantenimientos}" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</section>
+
+</html>

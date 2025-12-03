@@ -59,7 +59,6 @@ public class Mantenimiento {
     @Column(name = "fecha_mantenimiento", nullable = false)
     private Date fechaMantenimiento;
 
-    @NotNull(message = "El estado del mantenimiento es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 20)
     private EstadoMantenimiento estado;

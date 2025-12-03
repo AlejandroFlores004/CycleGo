@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('CycleGo | Detalle mantenimiento', 'mantenimientos', ~{::section})}">
+
+<section class="dashboard">
+
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold text-primary">Detalle del mantenimiento</h2>
+        <div>
+            <a th:href="@{/mantenimientos}" class="btn btn-outline-secondary me-1">Volver</a>
+            <a th:href="@{|/mantenimientos/editar/${mantenimiento.idMantenimiento}|}" class="btn btn-primary">Editar</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">ID</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.idMantenimiento}">1</dd>
+
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.descripcion}">...</dd>
+
+                <dt class="col-sm-3">Observaciones</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.observaciones != null ? mantenimiento.observaciones : '—'}">...</dd>
+
+                <dt class="col-sm-3">Fecha</dt>
+                <dd class="col-sm-9" th:text="${#dates.format(mantenimiento.fechaMantenimiento, 'dd/MM/yyyy HH:mm')}">02/12/2025 17:30</dd>
+
+                <dt class="col-sm-3">Bicicleta</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.bicicleta != null ? mantenimiento.bicicleta.codigo : '—'}">CX-123</dd>
+
+                <dt class="col-sm-3">Empleado</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.empleado != null ? mantenimiento.empleado.nombres != null ? mantenimiento.empleado.nombres : mantenimiento.empleado.nombre : '—'}">Juan</dd>
+
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.estado}">PENDIENTE</dd>
+
+                <dt class="col-sm-3">Costo</dt>
+                <dd class="col-sm-9" th:text="${mantenimiento.costo != null ? #numbers.formatDecimal(mantenimiento.costo, 1, 'COMMA', 2, 'POINT') : '0.00'}">0.00</dd>
+            </dl>
+        </div>
+    </div>
+
+</section>
+
+</html>

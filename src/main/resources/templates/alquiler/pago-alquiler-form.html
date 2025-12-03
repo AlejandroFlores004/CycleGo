@@ -9,6 +9,8 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="h5 mb-0" th:text="${titulo}">Pago de alquiler</h2>
                 </div>
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
                 <div class="card-body">
                     <!-- Info del alquiler -->
