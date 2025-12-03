@@ -129,7 +129,7 @@ public class AlquilerController {
             if (esNuevo) {
                 model.addAttribute("bicicletas", bicicletaService.listarDisponibles());
             } else {
-                model.addAttribute("bicicletas", bicicletaService.listarTodas());
+                model.addAttribute("bicicletas", bicicletaService.listar());
             }
             model.addAttribute("titulo", esNuevo ? "Nuevo alquiler" : "Editar alquiler");
             model.addAttribute("urlForm", "/alquileres/guardar");
